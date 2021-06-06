@@ -1,57 +1,85 @@
 <template>
-     <div class="container">
-          <div class="logo">
-               <img class="icon" src="../../icons/logo-final.svg" alt="" />
-          </div>
-          <div class="navigation">
-               <div class="vertical">
-                    <a href="">Exhibition</a>
-               </div>
-               <div class="vertical">
-                    <a href="">MarketPlace</a>
-               </div>
-               <div class="vertical">
-                    <a href="">Profile/Login</a>
-               </div>
-          </div>
-     </div>
+    <el-row type="flex" align="middle" style="background-color: #6eb4ac80">
+        <el-col :span="6" style="padding: 8px">
+            <img src="../../icons/logo-final.svg" alt="" />
+        </el-col>
+        <el-col :span="6"></el-col>
+        <el-col :span="12">
+            <el-row type="flex" justify="end">
+                <el-menu
+                    default-active=""
+                    mode="horizontal"
+                    background-color="inherit"
+                    text-color="#fff"
+                >
+                    <el-menu-item index="1">
+                        <span>Exhibitions</span>
+                        <el-divider direction="vertical"></el-divider>
+                    </el-menu-item>
+
+                    <el-menu-item index="2">
+                        <span>Marketplace</span>
+                        <el-divider direction="vertical"></el-divider>
+                    </el-menu-item>
+                    <template v-if="logged_in">
+                        <el-menu-item index="3">
+                            <el-avatar
+                                style="margin-right: 16px"
+                                size="small"
+                                src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+                            ></el-avatar>
+                        </el-menu-item>
+                    </template>
+                    <template v-else>
+                        <el-menu-item index="3">
+                            <span>Login</span>
+                            <el-divider direction="vertical"></el-divider>
+                        </el-menu-item>
+                        <el-menu-item index="4">
+                            <el-button
+                                size="mini"
+                                round
+                                style="margin-right: 16px"
+                                >REGISTER</el-button
+                            >
+                        </el-menu-item>
+                    </template>
+                </el-menu>
+            </el-row>
+        </el-col>
+    </el-row>
 </template>
 
 <script>
 export default {
-     name: 'Navbar',
-     props: {
-          logged_in: Boolean,
-          default: false,
-     },
-}
+    name: "Navbar",
+    props: {
+        logged_in: {
+            type: Boolean,
+            default: true,
+        },
+    },
+};
 </script>
 
 <style scoped>
-.container {
-     background-color: #6eb4ac80;
-     display: flex;
-     justify-content: space-between;
-     padding: 5px;
+span {
+    font-size: 1.1em;
+    /* font-weight: bold; */
 }
 
-.icon {
-     width: 280px;
+.el-menu {
+    border: none !important;
 }
 
-.navigation {
-     display: flex;
-     justify-content: space-between;
+.el-menu-item {
+    padding: 0px;
 }
 
-.vertical {
-     border-right: 1px solid rgba(0, 0, 0, 0.3);
-     height: 12px;
-     padding: 20px 15px;
-}
-
-a {
-     color: rgba(255, 255, 255, 0.95);
-     text-decoration: none;
+.el-divider {
+    background-color: darkgrey;
+    width: 1.5px;
+    height: 2em;
+    margin: 0 16px;
 }
 </style>
