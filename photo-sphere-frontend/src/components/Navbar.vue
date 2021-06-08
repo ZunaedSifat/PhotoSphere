@@ -9,15 +9,16 @@
                 <el-menu
                     default-active=""
                     mode="horizontal"
+                    router
                     background-color="inherit"
                     text-color="#fff"
                 >
-                    <el-menu-item index="1">
+                    <el-menu-item index="1" route="/exhibitions">
                         <span>Exhibitions</span>
                         <el-divider direction="vertical"></el-divider>
                     </el-menu-item>
 
-                    <el-menu-item index="2">
+                    <el-menu-item index="2" route="/marketplace">
                         <span>Marketplace</span>
                         <el-divider direction="vertical"></el-divider>
                     </el-menu-item>
@@ -30,15 +31,12 @@
                         </el-menu-item>
                     </template>
                     <template v-else>
-                        <el-menu-item index="3">
+                        <el-menu-item index="3" route="/login">
                             <span>Login</span>
                             <el-divider direction="vertical"></el-divider>
                         </el-menu-item>
-                        <el-menu-item index="4">
-                            <el-button
-                                size="mini"
-                                round
-                                style="margin-right: 16px"
+                        <el-menu-item index="4" route="/register">
+                            <el-button size="mini" style="margin-right: 16px"
                                 >REGISTER</el-button
                             >
                         </el-menu-item>
@@ -55,7 +53,7 @@ export default {
     props: {
         logged_in: {
             type: Boolean,
-            default: true,
+            default: false,
         },
     },
 };

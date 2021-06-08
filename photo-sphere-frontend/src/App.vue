@@ -45,13 +45,34 @@ body {
 }
 
 .el-footer {
-    position: fixed;
-    bottom: 0px;
+    /* position: fixed; */
+    /* bottom: 0px; */
     width: 100%;
 }
 
 .el-avatar {
     background-color: white !important;
+}
+
+.el-row {
+    width: 100%;
+}
+
+.el-menu-item {
+    transition: none !important;
+}
+
+.el-menu-item:hover {
+    color: aqua !important;
+    background: none !important;
+}
+
+.el-menu-item.is-active {
+    border: none !important;
+}
+
+.el-form-item__error {
+    padding-top: 6px !important;
 }
 
 i {
