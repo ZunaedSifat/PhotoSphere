@@ -12,7 +12,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = (
-            'id', 'email', 'first_name', 'last_name',
+            'id', 'email', 'first_name', 'last_name', 'avatar'
         )
         read_only_fields = ['id']
 
@@ -24,7 +24,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         """ Updates the object in database from validated data """
-        # instance.save()
+        instance.avatar = validated_data.get('avatar', None)
+        instance.save()
 
         # updating and saving User attribute
         user = validated_data.get('user', None)
@@ -49,7 +50,7 @@ class ProfileCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = (
-            'email', 'first_name', 'last_name', 'password'
+            'email', 'first_name', 'last_name', 'password',  'avatar'
         )
         read_only_fields = [
             'uuid', 'hsc_passing_year', 'hall', 'room_no', 'bio', 'blood_group',

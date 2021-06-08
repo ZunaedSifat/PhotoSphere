@@ -14,8 +14,8 @@ class Profile(models.Model):
         related_name='profile',
         on_delete=models.CASCADE
     )
+    avatar = models.ImageField(upload_to='avatar/', null=True, blank=True)
 
-    # todo: change this and make different managers for accepted and pending users
     objects = querysets.ProfileQuerySet.as_manager()
 
     class Meta:
