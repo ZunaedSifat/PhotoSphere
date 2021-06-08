@@ -1,6 +1,6 @@
 <template>
-    <el-container direction="vertical">
-        <el-row style="width: 100%; margin-top: 5%">
+    <el-container direction="vertical" style="margin: 5% 0px">
+        <el-row style="width: 100%">
             <el-col :span="1"></el-col>
             <el-col :span="22">
                 <el-carousel :interval="4000" type="card" arrow="always">
@@ -42,7 +42,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .carousel__image {
     width: 100%;
     height: 100%;

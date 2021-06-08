@@ -21,6 +21,13 @@ $--footer-padding: 0px !default;
 
 $--main-padding: 0px !default;
 
+/* Border
+-------------------------- */
+
+$--border-radius-base: 8px !default;
+$--border-radius-small: 4px !default;
+$--menu-item-hover-fill: none !default;
+
 /* icon font path, required */
 
 $--font-path: '~element-plus/lib/theme-chalk/fonts';
