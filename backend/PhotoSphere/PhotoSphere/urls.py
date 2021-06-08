@@ -35,4 +35,5 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('ping/', PingView.as_view(), name='ping'),
     path('auth/', include('rest_framework_social_oauth2.urls')),
+    path('user/', include('user.urls')),
 ]
