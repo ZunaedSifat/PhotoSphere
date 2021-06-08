@@ -1,0 +1,27 @@
+/*
+Write your variables here. All available variables can be
+found in element-plus/packages/theme-chalk/src/common/var.scss.
+For example, to overwrite the theme color:
+*/
+
+$--color-primary: teal;
+
+/* Header
+  --------------------------*/
+
+$--header-padding: 0px !default;
+
+/* Footer
+--------------------------*/
+
+$--footer-padding: 0px !default;
+
+/* Main
+--------------------------*/
+
+$--main-padding: 0px !default;
+
+/* icon font path, required */
+
+$--font-path: '~element-plus/lib/theme-chalk/fonts';
+@import "~element-plus/packages/theme-chalk/src/index";
