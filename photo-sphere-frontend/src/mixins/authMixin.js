@@ -2,9 +2,9 @@ import { mapState, mapGetters } from "vuex";
 
 const authMixin = {
     computed: {
-        ...mapState("profile", ["uuid", "has_approval_permission"]),
+        ...mapState("user", ["id"]),
         ...mapGetters("auth", ["isLoggedIn"]),
-        ...mapGetters("profile", ["getFullName", "getInitials", "isApproved", "hasEnoughInfo"]),
+        ...mapGetters("user", ["getFullName", "getInitials"]),
     },
     methods: {
         logOut() {

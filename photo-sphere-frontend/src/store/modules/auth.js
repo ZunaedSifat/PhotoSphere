@@ -86,7 +86,7 @@ const actions = {
             commit(SET_ACCESS_TOKEN, data['access_token']);
             commit(SET_REFRESH_TOKEN, data['refresh_token']);
 
-            // dispatch('profile/fetchCurrentUserProfile', null, { root: true });
+            dispatch('user/fetchCurrentUserProfile', null, { root: true });
         } catch (error) {
             return Promise.reject(error);
         }
@@ -94,9 +94,7 @@ const actions = {
     logOut({ state, commit }) {
         clearInterval(state.interval_id);
         commit(RESET);
-        commit(`profile/${RESET}`, null, { root: true });
-        commit(`registration/${RESET}`, null, { root: true });
-        commit(`invitation/${RESET}`, null, { root: true });
+        commit(`user/${RESET}`, null, { root: true });
     }
 };
 

@@ -1,7 +1,9 @@
 <template>
     <el-row type="flex" align="middle" class="nav-container">
         <el-col :span="6" style="padding: 8px">
-            <img src="../../icons/logo-final.svg" alt="" />
+            <router-link to="/" exact>
+                <img src="../../icons/logo-final.svg" alt="" />
+            </router-link>
         </el-col>
         <el-col :span="6"></el-col>
         <el-col :span="12">
@@ -22,8 +24,12 @@
                         <span>Marketplace</span>
                         <el-divider direction="vertical"></el-divider>
                     </el-menu-item>
-                    <template v-if="logged_in">
-                        <el-menu-item index="3" style="margin-right: 16px">
+                    <template v-if="isLoggedIn">
+                        <el-menu-item
+                            index="3"
+                            :route="profileRoute"
+                            style="margin-right: 16px"
+                        >
                             <el-avatar
                                 icon="el-icon-user-solid"
                                 size="small"
@@ -48,12 +54,14 @@
 </template>
 
 <script>
+import authMixin from "@/mixins/authMixin";
+
 export default {
     name: "Navbar",
-    props: {
-        logged_in: {
-            type: Boolean,
-            default: false,
+    mixins: [authMixin],
+    computed: {
+        profileRoute() {
+            return "/user-profile/" + this.id;
         },
     },
 };

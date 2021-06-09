@@ -22,6 +22,28 @@ export default {
         Navbar,
         CustomFooter,
     },
+    data() {
+        return {
+            loading: false,
+        };
+    },
+    methods: {
+        async initializeApp() {
+            this.loading = true;
+            try {
+                await this.$store.dispatch("auth/autoLogin");
+                await this.$store.dispatch("user/fetchCurrentUserProfile");
+            } catch {
+                this.loading = false;
+            } finally {
+                this.loading = false;
+            }
+        },
+    },
+    created() {
+        document.querySelector("head title").textContent = "Photo Sphere";
+        this.initializeApp();
+    },
 };
 </script>
 

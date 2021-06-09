@@ -26,6 +26,7 @@
                         <el-button
                             type="primary"
                             style="padding: 8px 80px; margin-top: 16px"
+                            :loading="loading"
                             @click="emailLogin"
                             >LOGIN
                         </el-button>
@@ -74,6 +75,7 @@ export default {
             }
         };
         return {
+            loading: false,
             form: {
                 email: "",
                 password: "",
@@ -116,7 +118,7 @@ export default {
                 // }
                 this.$router.replace({
                     name: "User-Profile",
-                    params: { uuid: "1234567890" },
+                    params: { id: this.id },
                 });
             }
         },
@@ -130,7 +132,7 @@ export default {
             };
             try {
                 await this.$store.dispatch("auth/exchangeSocialToken", params);
-                // await this.$store.dispatch("profile/fetchCurrentUserProfile");
+                await this.$store.dispatch("user/fetchCurrentUserProfile");
                 // if (!this.isApproved) {
                 //     await this.$store.dispatch(
                 //         "registration/fetchRegistrationDetails"
@@ -144,7 +146,7 @@ export default {
         },
         async emailLogin() {
             if (this.$refs.form.validate()) {
-                // this.loading = true;
+                this.loading = true;
                 const params = {
                     grant_type: "password",
                     client_id: process.env.VUE_APP_CLIENT_ID,
@@ -157,12 +159,10 @@ export default {
                         "auth/loginWithCredentials",
                         params
                     );
-                    // await this.$store.dispatch(
-                    //     "profile/fetchCurrentUserProfile"
-                    // );
+                    await this.$store.dispatch("user/fetchCurrentUserProfile");
                     this.changeRoute();
                 } catch (error) {
-                    // this.loading = false;
+                    this.loading = false;
                     console.log(error);
                 }
             }
