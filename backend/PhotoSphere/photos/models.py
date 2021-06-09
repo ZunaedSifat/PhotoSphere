@@ -1,5 +1,6 @@
 from django.db import models
 from user.models import Profile
+from photos.enums import PhotoPrivacyChoices
 
 
 class Photo(models.Model):
@@ -7,6 +8,12 @@ class Photo(models.Model):
     title = models.CharField(max_length=100)
     caption = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='photos/')
+    privacy = models.CharField(
+        max_length=1,
+        choices=PhotoPrivacyChoices.choices,
+        default=PhotoPrivacyChoices.ONLY_ME,
+        blank=False
+    )
     for_sale = models.BooleanField()
     is_digital = models.BooleanField()
     price = models.DecimalField(max_digits=8, decimal_places=2)
