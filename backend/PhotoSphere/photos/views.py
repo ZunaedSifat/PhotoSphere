@@ -13,6 +13,17 @@ class PhotoListCreateAPIView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(uploader=self.request.user.profile)
 
+    def filter_queryset(self, queryset):
+        params = self.request.query_params
+        if 'user' in params:
+            try:
+                user = int(params.get('user'))
+                queryset = queryset.filter(uploader__user=user)
+            except:
+                pass
+
+        return queryset
+
 
 class PhotoDetailsAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (PhotoDetailsPermission, )
