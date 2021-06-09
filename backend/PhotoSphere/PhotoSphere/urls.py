@@ -38,6 +38,7 @@ urlpatterns = [
     path('ping/', PingView.as_view(), name='ping'),
     path('auth/', include('rest_framework_social_oauth2.urls')),
     path('user/', include('user.urls')),
+    path('photo/', include('photos.urls'))
 ]
 
 if settings.DEBUG:
