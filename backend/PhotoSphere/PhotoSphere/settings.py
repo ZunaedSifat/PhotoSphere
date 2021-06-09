@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'rest_framework_social_oauth2',
 
     'user',
+    'photos',
 ]
 
 MIDDLEWARE = [

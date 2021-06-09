@@ -38,6 +38,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class ProfileCreationSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='user.id', read_only=True)
     email = serializers.EmailField(source='user.email', required=True)
     first_name = serializers.CharField(source='user.first_name', required=True)
     last_name = serializers.CharField(source='user.last_name', required=True)
@@ -50,12 +51,16 @@ class ProfileCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = (
-            'email', 'first_name', 'last_name', 'password',  'avatar'
+            'id', 'email', 'first_name', 'last_name', 'password',  'avatar'
         )
-        read_only_fields = [
-            'uuid', 'hsc_passing_year', 'hall', 'room_no', 'bio', 'blood_group',
-            'has_approval_permission', 'approval_status',
-        ]
+        read_only_fields = ['id']
+
+    def validate(self, attrs):
+        email = attrs.get('user').get('email')
+        if get_user_model().objects.filter(username=email).exists():
+            raise serializers.ValidationError({'email': 'Email already exists'})
+
+        return attrs
 
     def create(self, validated_data):
         user = get_user_model().objects.create_user(
