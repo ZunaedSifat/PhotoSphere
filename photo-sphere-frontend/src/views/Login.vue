@@ -26,7 +26,7 @@
                         <el-button
                             type="primary"
                             style="padding: 8px 80px; margin-top: 16px"
-                            @click="onSubmit"
+                            @click="emailLogin"
                             >LOGIN
                         </el-button>
                     </el-form-item>
@@ -36,11 +36,10 @@
                             <el-divider>OR</el-divider>
                         </el-row>
                         <el-row type="flex" justify="center">
-                            <el-button type="primary" circle>
-                                <font-awesome-icon
-                                    :icon="['fab', 'google']"
-                                ></font-awesome-icon>
-                            </el-button>
+                            <google-login
+                                @socialClick="socialLogin"
+                            ></google-login>
+
                             <el-button type="primary" circle>
                                 <font-awesome-icon
                                     :icon="['fab', 'facebook']"
@@ -55,8 +54,15 @@
 </template>
 
 <script>
+import GoogleLogin from "@/components/auth/GoogleLogin";
+import authMixin from "@/mixins/authMixin";
 var emailValidator = require("email-validator");
+
 export default {
+    components: {
+        GoogleLogin,
+    },
+    mixins: [authMixin],
     data() {
         var validateEmail = (rule, value, callback) => {
             if (value === "") {
@@ -96,15 +102,70 @@ export default {
         };
     },
     methods: {
-        onSubmit() {
-            this.$refs.form.validate((valid) => {
-                if (valid) {
-                    alert("submit!");
-                } else {
-                    console.log("error submit!!");
-                    return false;
+        changeRoute() {
+            if (this.$route.params.nextUrl != null) {
+                this.$router.replace(this.$route.params.nextUrl);
+            } else {
+                // if (this.hasEnoughInfo) {
+                //     this.$router.replace({
+                //         name: "profile",
+                //         params: { uuid: this.uuid },
+                //     });
+                // } else {
+                //     this.$router.replace("/signup/social");
+                // }
+                this.$router.replace({
+                    name: "User-Profile",
+                    params: { uuid: "1234567890" },
+                });
+            }
+        },
+        async socialLogin(settings) {
+            const params = {
+                grant_type: "convert_token",
+                client_id: process.env.VUE_APP_CLIENT_ID,
+                client_secret: process.env.VUE_APP_CLIENT_SECRET,
+                backend: settings.backend,
+                token: settings.token,
+            };
+            try {
+                await this.$store.dispatch("auth/exchangeSocialToken", params);
+                // await this.$store.dispatch("profile/fetchCurrentUserProfile");
+                // if (!this.isApproved) {
+                //     await this.$store.dispatch(
+                //         "registration/fetchRegistrationDetails"
+                //     );
+                // }
+            } catch (error) {
+                console.log(error);
+            } finally {
+                this.changeRoute();
+            }
+        },
+        async emailLogin() {
+            if (this.$refs.form.validate()) {
+                // this.loading = true;
+                const params = {
+                    grant_type: "password",
+                    client_id: process.env.VUE_APP_CLIENT_ID,
+                    client_secret: process.env.VUE_APP_CLIENT_SECRET,
+                    username: this.form.email,
+                    password: this.form.password,
+                };
+                try {
+                    await this.$store.dispatch(
+                        "auth/loginWithCredentials",
+                        params
+                    );
+                    // await this.$store.dispatch(
+                    //     "profile/fetchCurrentUserProfile"
+                    // );
+                    this.changeRoute();
+                } catch (error) {
+                    // this.loading = false;
+                    console.log(error);
                 }
-            });
+            }
         },
     },
 };
