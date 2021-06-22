@@ -13,8 +13,11 @@
                     status-icon
                     style="margin-top: 80px"
                 >
-                    <el-form-item label="Name" prop="name">
-                        <el-input v-model="form.name"></el-input>
+                    <el-form-item label="First Name" prop="first_name">
+                        <el-input v-model="form.first_name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="Last Name" prop="last_name">
+                        <el-input v-model="form.last_name"></el-input>
                     </el-form-item>
                     <el-form-item label="E-mail" prop="email">
                         <el-input v-model="form.email"></el-input>
@@ -91,13 +94,21 @@ export default {
         };
         return {
             form: {
-                name: "",
+                first_name: "",
+                last_name: "",
                 email: "",
                 password: "",
                 confirmPassword: "",
             },
             rules: {
-                name: [
+                first_name: [
+                    {
+                        required: true,
+                        message: "This field is required",
+                        trigger: ["blur", "change"],
+                    },
+                ],
+                last_name: [
                     {
                         required: true,
                         message: "This field is required",

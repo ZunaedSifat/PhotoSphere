@@ -24,6 +24,29 @@
                     >
                 </el-row>
 
+                <template v-if="photosLoading">
+                    <div v-loading="photosLoading"></div>
+                </template>
+                <template v-else>
+                    <el-row style="margin-bottom: 16px">
+                        <el-col
+                            :span="7"
+                            :offset="i == 0 ? 0 : 1"
+                            v-for="i in grid"
+                            :key="i"
+                        >
+                            <photo-preview-card
+                                :photo="photos[i]"
+                            ></photo-preview-card>
+                        </el-col>
+                    </el-row>
+                    <!-- <photo-preview-card
+                        v-for="(photo, index) in photos"
+                        :key="index"
+                        :photo="photo"
+                    ></photo-preview-card> -->
+                </template>
+
                 <el-row type="flex" align="middle">
                     <h3>Albums</h3>
                     <el-button size="mini" icon="el-icon-folder-add"
@@ -42,16 +65,36 @@
 <script>
 import authMixin from "@/mixins/authMixin";
 import PhotoUploadDialog from "@/components/dialog/PhotoUploadDialog";
+import PhotoPreviewCard from "@/components/photo/PhotoPreviewCard";
+import { getOwnPhotos } from "@/api/photo.api";
 
 export default {
     mixins: [authMixin],
     components: {
         PhotoUploadDialog,
+        PhotoPreviewCard,
     },
     data() {
         return {
+            grid: [0, 1, 2],
             photoUpload: false,
+            photosLoading: false,
+            photos: [],
         };
+    },
+    created() {
+        this.photosLoading = true;
+        getOwnPhotos(this.id)
+            .then((res) => {
+                console.log(res);
+                this.photos = res.data;
+                this.grid = [];
+                for (var i = 0; i < this.photos.length; i++) {
+                    this.grid.push(i);
+                }
+            })
+            .catch((error) => console.log(error))
+            .finally(() => (this.photosLoading = false));
     },
 };
 </script>
