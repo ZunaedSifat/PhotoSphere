@@ -1,11 +1,11 @@
 from rest_framework import permissions
-from rest_framework.exceptions import NotAuthenticated, PermissionDenied
+from rest_framework.exceptions import NotAuthenticated
 
 
 SAFE_METHODS = ['GET']
 
 
-class PhotoListCreatePermission(permissions.BasePermission):
+class ListCreatePermission(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in SAFE_METHODS:
             return True
@@ -22,4 +22,4 @@ class PhotoDetailsPermission(permissions.BasePermission):
 
         if not request.user.is_authenticated:
             raise NotAuthenticated()
-        return obj.uploader.id == request.user.id
+        return obj.uploader.user.id == request.user.id

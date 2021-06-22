@@ -2,11 +2,11 @@ from rest_framework import generics
 
 from photos.serializers import PhotoSerializer
 from photos.models import Photo
-from photos.permissions import PhotoDetailsPermission, PhotoListCreatePermission
+from photos.permissions import PhotoDetailsPermission, ListCreatePermission
 
 
 class PhotoListCreateAPIView(generics.ListCreateAPIView):
-    permission_classes = (PhotoListCreatePermission, )
+    permission_classes = (ListCreatePermission,)
     serializer_class = PhotoSerializer
     queryset = Photo.objects.all()
 
