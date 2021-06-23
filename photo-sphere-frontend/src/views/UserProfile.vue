@@ -28,7 +28,7 @@
                     <div v-loading="photosLoading"></div>
                 </template>
                 <template v-else>
-                    <el-row style="margin-bottom: 16px">
+                    <!-- <el-row style="margin-bottom: 16px">
                         <el-col
                             :span="7"
                             :offset="i == 0 ? 0 : 1"
@@ -39,7 +39,14 @@
                                 :photo="photos[i]"
                             ></photo-preview-card>
                         </el-col>
-                    </el-row>
+                    </el-row> -->
+                    <el-space alignment="start" size="medium" wrap>
+                        <photo-preview-card
+                            v-for="i in grid"
+                            :key="i"
+                            :photo="photos[i]"
+                        ></photo-preview-card>
+                    </el-space>
                     <!-- <photo-preview-card
                         v-for="(photo, index) in photos"
                         :key="index"

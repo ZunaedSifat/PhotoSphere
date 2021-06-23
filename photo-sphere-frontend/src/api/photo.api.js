@@ -31,7 +31,10 @@ const getOwnPhotos = (user) => httpClient.get(`${END_POINT}/`, {
     }
 });
 
+const getPhotoDetails = (id) => httpClient.get(`${END_POINT}/${id}`);
+
 export {
     uploadPhoto,
-    getOwnPhotos
+    getOwnPhotos,
+    getPhotoDetails,
 }

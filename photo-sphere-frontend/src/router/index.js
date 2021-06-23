@@ -3,6 +3,7 @@ import Home from '@/views/Home.vue'
 import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
 import UserProfile from '@/views/UserProfile.vue'
+import PhotoDetails from '@/views/PhotoDetails.vue'
 
 const routes = [{
         path: '/',
@@ -23,6 +24,11 @@ const routes = [{
         path: '/user-profile/:id',
         name: 'User-Profile',
         component: UserProfile
+    },
+    {
+        path: '/photo/:id',
+        name: 'Photo-Details',
+        component: PhotoDetails
     },
     {
         path: '/exhibitions',

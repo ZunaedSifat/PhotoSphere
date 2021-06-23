@@ -6,7 +6,7 @@ const END_POINT = '/user';
 const getOwnProfile = () => httpClient.get(`${END_POINT}/me/`);
 
 // used to fetch any public profile 
-const getProfileById = (uuid) => httpClient.get(`${END_POINT}/${uuid}/`);
+const getProfileById = (id) => httpClient.get(`${END_POINT}/${id}/`);
 
 // used to update current user's profile information
 const updateProfile = (data) => httpClient.patch(`${END_POINT}/me/`, data);

@@ -1,6 +1,9 @@
 
 <template>
-    <el-card :body-style="{ padding: '0px' }">
+    <el-card
+        :body-style="{ padding: '0px', width: '200px' }"
+        @click="viewDetails"
+    >
         <img :src="photo.image" class="image" />
         <div style="padding: 14px">
             <span>{{ photo.title }}</span>
@@ -24,6 +27,14 @@ export default {
         return {
             currentDate: new Date(),
         };
+    },
+    methods: {
+        viewDetails() {
+            this.$router.push({
+                name: "Photo-Details",
+                params: { id: this.photo.id },
+            });
+        },
     },
 };
 </script>
