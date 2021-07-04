@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import generics
 
 from photos.serializers import PhotoSerializer
@@ -21,6 +22,17 @@ class PhotoListCreateAPIView(generics.ListCreateAPIView):
                 queryset = queryset.filter(uploader__user=user)
             except:
                 pass
+
+        try:
+            remove_my = int(params.get('remove_my'))
+            if remove_my:
+                queryset = queryset.filter(~Q(uploader__user=self.request.user))
+        except:
+            pass
+
+        for_sale = params.get('for_sale') == '1'
+        if for_sale:
+            queryset = queryset.filter(for_sale=for_sale)
 
         return queryset
 
