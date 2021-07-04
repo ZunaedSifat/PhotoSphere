@@ -6,7 +6,7 @@
         <el-main>
             <router-view></router-view>
         </el-main>
-        <el-footer>
+        <el-footer v-if="showFooter">
             <custom-footer></custom-footer>
         </el-footer>
     </el-container>
@@ -27,6 +27,13 @@ export default {
             loading: false,
         };
     },
+    computed: {
+        showFooter() {
+            return (
+                this.$route.path != "/login" && this.$route.path != "/register"
+            );
+        },
+    },
     methods: {
         async initializeApp() {
             this.loading = true;
@@ -42,6 +49,7 @@ export default {
     },
     created() {
         document.querySelector("head title").textContent = "Photo Sphere";
+        console.log(this.showFooter);
         this.initializeApp();
     },
 };
@@ -67,8 +75,8 @@ body {
 }
 
 .el-footer {
-    /* position: fixed; */
-    /* bottom: 0px; */
+    position: fixed;
+    bottom: 0px;
     width: 100%;
 }
 

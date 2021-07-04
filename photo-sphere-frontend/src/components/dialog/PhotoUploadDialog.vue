@@ -7,13 +7,22 @@
         :before-close="onClose"
     >
         <el-form
+            enctype="multipart/form-data"
             ref="form"
             :model="form"
             :rules="rules"
             size="small"
             status-icon
         >
-            <el-upload
+            <input
+                type="file"
+                id="file"
+                ref="file"
+                class="input is-rounded"
+                @change="handleFileUpload"
+            />
+            <img v-if="file" :src="file.url" />
+            <!-- <el-upload
                 drag
                 thumbnail-mode
                 action="https://jsonplaceholder.typicode.com/posts/"
@@ -32,7 +41,7 @@
                         jpg/png files with a size less than 500kb
                     </div>
                 </template>
-            </el-upload>
+            </el-upload> -->
             <el-form-item label="Title" prop="title">
                 <el-input v-model="form.title"></el-input>
             </el-form-item>
@@ -82,6 +91,8 @@
 </template>
 
 <script>
+import { uploadPhoto } from "@/api/photo.api";
+
 export default {
     name: "Photo upload",
     props: {
@@ -94,13 +105,13 @@ export default {
         return {
             loading: false,
             fileList: [],
-
+            file: null,
             form: {
                 image: "",
                 title: "",
                 caption: "",
                 for_sale: false,
-                price: null,
+                price: 0,
                 is_digital: false,
                 privacy: null,
             },
@@ -118,9 +129,40 @@ export default {
                 url: file.url,
             };
             Vue.set(this.fileList, 0, newFile);
-            this.image = file.url;
+            this.image = file;
         },
-        onUpload() {},
+        handleFileUpload() {
+            this.file = this.$refs.file.files[0];
+        },
+        async onUpload() {
+            try {
+                var formData = new FormData();
+                formData.append("title", this.form.title);
+                formData.append("caption", this.form.caption);
+                formData.append("for_sale", this.form.for_sale);
+                formData.append("price", this.form.price);
+                formData.append("is_digital", this.form.is_digital);
+                formData.append("image", this.file);
+
+                var data = {
+                    title: this.form.title,
+                    caption: this.form.caption,
+                    image: this.form.image,
+                    for_sale: this.form.for_sale,
+                    price: this.form.price,
+                    is_digital: this.form.is_digital,
+                };
+
+                const response = await uploadPhoto(formData);
+                console.log(response);
+                this.$emit("close");
+            } catch (error) {
+                console.log(error.response);
+            } finally {
+                console.log("done");
+                this.$emit("close");
+            }
+        },
     },
 };
 </script>
