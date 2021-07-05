@@ -63,7 +63,7 @@ class ProfileCreationSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        user = get_user_model().objects.create_user(
+        user = get_user_model().objects.request_create_user(
             username=validated_data.get('user').get('email'),
             email=validated_data.get('user').get('email'),
             first_name=validated_data.get('user').get('first_name'),

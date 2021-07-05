@@ -15,6 +15,7 @@ class Profile(models.Model):
         on_delete=models.CASCADE
     )
     avatar = models.ImageField(upload_to='avatar/', null=True, blank=True)
+    following_list = models.ManyToManyField(to=UserModel, related_name='follower_list')
 
     objects = querysets.ProfileQuerySet.as_manager()
 
