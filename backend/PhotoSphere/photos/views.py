@@ -4,8 +4,8 @@ from django.db.models import Q
 from rest_framework import generics, views, status, response, exceptions
 from rest_framework.permissions import IsAuthenticated
 
-from photos.serializers import PhotoSerializer
-from photos.models import Photo
+from photos.serializers import PhotoSerializer, TagSerializer
+from photos.models import Photo, Tag
 from photos.permissions import PhotoDetailsPermission, ListCreatePermission
 
 
@@ -97,3 +97,9 @@ class PhotoLikeView(views.APIView):
             data={'msg': 'Removed like from photo'},
             status=status.HTTP_200_OK
         )
+
+class TagListCreateAPIView(generics.ListCreateAPIView):
+    permission_classes = (ListCreatePermission,)
+    serializer_class = TagSerializer
+    queryset = Tag.objects.all()
+
