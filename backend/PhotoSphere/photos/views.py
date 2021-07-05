@@ -1,3 +1,5 @@
+import datetime
+
 from django.db.models import Q
 from rest_framework import generics
 
@@ -23,16 +25,32 @@ class PhotoListCreateAPIView(generics.ListCreateAPIView):
             except:
                 pass
 
-        try:
-            remove_my = int(params.get('remove_my'))
+        if 'remove_my' in params:
+            remove_my = params.get('remove_my') != 'false'
             if remove_my:
                 queryset = queryset.filter(~Q(uploader__user=self.request.user))
-        except:
-            pass
 
-        for_sale = params.get('for_sale') == '1'
-        if for_sale:
+        if 'for_sale' in params:
+            for_sale = params.get('for_sale') != 'false'
             queryset = queryset.filter(for_sale=for_sale)
+
+        if 'is_digital' in params:
+            is_digital = params.get('is_digital') != 'false'
+            queryset = queryset.filter(is_digital=is_digital)
+
+        if 'time_low' in params:
+            time_low = datetime.datetime.fromisoformat(params.get('time_low'))
+            queryset = queryset.filter(created_at__gte=time_low)
+
+        if 'time_hi' in params:
+            time_hi = datetime.datetime.fromisoformat(params.get('time_hi'))
+            queryset = queryset.filter(created_at__lte=time_hi)
+
+        if 'order_by' in params:
+            try:
+                queryset = queryset.order_by(params.get('order_by'))
+            except:
+                pass
 
         return queryset
 
