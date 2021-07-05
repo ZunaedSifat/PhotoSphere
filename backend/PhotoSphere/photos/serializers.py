@@ -5,5 +5,17 @@ from photos.models import Photo
 class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
-        fields = ('id', 'uploader', 'title', 'caption', 'privacy', 'image', 'for_sale', 'is_digital', 'price', 'created_at')
+        fields = (
+            'id',
+            'uploader',
+            'title',
+            'caption',
+            'privacy',
+            'image',
+            'for_sale',
+            'is_digital',
+            'price',
+            'created_at',
+            'like_count'
+        )
         read_only_fields = ['id']

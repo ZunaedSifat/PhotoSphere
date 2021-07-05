@@ -1,7 +1,8 @@
 import datetime
 
 from django.db.models import Q
-from rest_framework import generics
+from rest_framework import generics, views, status, response, exceptions
+from rest_framework.permissions import IsAuthenticated
 
 from photos.serializers import PhotoSerializer
 from photos.models import Photo
@@ -62,3 +63,37 @@ class PhotoDetailsAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_update(self, serializer):
         serializer.save(uploader=self.request.user.profile)
+
+
+class PhotoLikeView(views.APIView):
+    permission_classes = (IsAuthenticated, )  # todo: privacy permission
+
+    def get_photo(self, pk):
+        try:
+            return Photo.objects.get(pk=pk)
+        except:
+            raise exceptions.NotFound({'msg': 'No photo found with this ID'})
+
+    def get(self, request, pk, format=None):
+        photo = self.get_photo(pk=pk)
+        likes = [user.id for user in photo.likes.all()]
+        return response.Response(
+            data={'likes': likes},
+            status=status.HTTP_200_OK
+        )
+
+    def post(self, request, pk, format=None):
+        photo = self.get_photo(pk=pk)
+        photo.add_like(self.request.user)
+        return response.Response(
+            data={'msg': 'Liked the photo'},
+            status=status.HTTP_200_OK
+        )
+
+    def delete(self, request, pk, format=None):
+        photo = self.get_photo(pk=pk)
+        photo.remove_like(self.request.user)
+        return response.Response(
+            data={'msg': 'Removed like from photo'},
+            status=status.HTTP_200_OK
+        )
