@@ -7,19 +7,23 @@
             <el-row type="flex">
                 <el-col :offset="1" :span="12">
                     <el-card :body-style="{ padding: '0px' }">
-                        <img :src="photo.image" class="image" />
+                        <img :src="topPhoto" class="image" />
 
                         <div style="padding: 14px; text-align: left">
                             <div class="bottom">
-                                <span>{{ photo.title }}</span>
+                                <span>{{ album.name }}</span>
                                 <div>
-                                    <div
+                                    <!-- <div
                                         style="
                                             display: inline-block;
                                             margin-right: 8px;
                                         "
                                     >
-                                        <el-button class="icon-button" circle>
+                                        <el-button
+                                            class="icon-button"
+                                            
+                                            circle
+                                        >
                                             <font-awesome-icon
                                                 :icon="['far', 'heart']"
                                             ></font-awesome-icon>
@@ -27,7 +31,7 @@
                                         <span class="caption">{{
                                             photo.like_count
                                         }}</span>
-                                    </div>
+                                    </div> -->
                                     <div style="display: inline-block">
                                         <el-button class="icon-button" circle>
                                             <font-awesome-icon
@@ -37,63 +41,44 @@
                                     </div>
                                 </div>
                             </div>
-                            <span class="caption"> {{ photo.caption }}</span>
+                            <span class="caption">
+                                {{ album.description }}</span
+                            >
                         </div>
                     </el-card>
+                    <template v-if="photosLoading !== 0">
+                        <div v-loading="photosLoading !== 0"></div>
+                    </template>
+                    <template v-else>
+                        <el-space alignment="start" size="medium" wrap>
+                            <photo-preview-card
+                                v-for="(photo, index) in photos"
+                                :key="index"
+                                :photo="photo"
+                            ></photo-preview-card>
+                        </el-space>
+                    </template>
                 </el-col>
                 <el-col :span="1">
                     <el-divider direction="vertical"></el-divider>
                 </el-col>
                 <el-col :span="9">
                     <el-skeleton
-                        v-if="uploaderLoading"
+                        v-if="ownerLoading"
                         :rows="5"
                         animated
                     ></el-skeleton>
                     <template v-else>
                         <el-descriptions title="Details" :column="1" border>
-                            <el-descriptions-item
-                                v-if="photo.for_sale"
-                                label="Price"
-                            >
-                                {{ photo.price }}</el-descriptions-item
-                            >
                             <el-descriptions-item label="Owner">
-                                {{ uploaderName }}
+                                {{ ownerName }}
                                 <el-button
                                     style="padding: 8px; margin-left: 8px"
                                     @click="visitUploaderProfile"
                                     >View Profile</el-button
                                 >
-                            </el-descriptions-item>
-                            <el-descriptions-item label="Uploader">
-                                {{ uploaderName }}
-                                <el-button
-                                    style="padding: 8px; margin-left: 8px"
-                                    @click="visitUploaderProfile"
-                                    >View Profile</el-button
-                                >
-                            </el-descriptions-item>
-
-                            <el-descriptions-item label="Tags">
-                                <el-tag
-                                    v-for="tag in tags"
-                                    :key="tag"
-                                    size="small"
-                                    >{{ tag }}</el-tag
-                                >
-                                <el-tag size="small">teal</el-tag>
                             </el-descriptions-item>
                         </el-descriptions>
-                        <el-button
-                            type="primary"
-                            style="
-                                width: 100%;
-                                padding: 12px 80px;
-                                margin-top: 24px;
-                            "
-                            >PURCHASE</el-button
-                        >
                     </template>
                 </el-col>
             </el-row>
@@ -102,55 +87,76 @@
 </template>
 
 <script>
-import { getPhotoDetails } from "@/api/photo.api";
+import { getAlbumDetails } from "@/api/album.api";
 import { getProfileById } from "@/api/user.api";
-import { getTag } from "@/api/tag.api";
+import { getPhotoDetails } from "@/api/photo.api";
+import PhotoPreviewCard from "@/components/photo/PhotoPreviewCard";
 
 export default {
+    components: {
+        PhotoPreviewCard,
+    },
     data() {
         return {
             id: this.$route.params.id,
-            photo: null,
+            album: null,
             loading: false,
-            uploaderLoading: false,
-            uploaderName: null,
-            tagsLoading: false,
-            tags: [],
+            ownerLoading: false,
+            ownerName: null,
+            topPhoto: null,
+            photos: [],
+            photosLoading: 100,
         };
     },
     methods: {
         visitUploaderProfile() {
             this.$router.push({
                 name: "User-Profile",
-                params: { id: this.photo.uploader },
+                params: { id: this.album.owner },
             });
         },
     },
     created() {
         this.loading = true;
-        this.uploaderLoading = true;
-        this.tagsLoading = true;
-        getPhotoDetails(this.id)
+        this.ownerLoading = true;
+        getAlbumDetails(this.id)
             .then((res) => {
                 console.log(res);
-                this.photo = res.data;
+                this.album = res.data;
+                this.photosLoading = this.album.photos.length;
 
-                getProfileById(this.photo.uploader).then((user) => {
-                    this.uploaderName =
+                getProfileById(this.album.owner).then((user) => {
+                    this.ownerName =
                         user.data.first_name + " " + user.data.last_name;
                 });
 
-                res.data.tags.forEach(function (tagId, index, array) {
-                    getTag(tagId).then((tagRes) => {
-                        this.tags.push(tagRes.data.name);
-                    });
+                getPhotoDetails(this.album.photos[0]).then((res) => {
+                    this.topPhoto = res.data.image;
+                    // this.photos.push(res.data);
                 });
+
+                // getPhotoDetails(this.album.photos[1]).then((res) => {
+
+                //     this.photos.push(res.data);
+                // });
+
+                console.log("left " + this.photosLoading);
+                for (let i = 0; i < this.album.photos.length; i++) {
+                    getPhotoDetails(this.album.photos[i]).then(
+                        (photoDetails) => {
+                            this.photos.push(photoDetails);
+                            console.log(photoDetails);
+                            this.photosLoading--;
+                            console.log("left " + this.photosLoading);
+                        }
+                    );
+                }
             })
             .catch((error) => console.log(error))
             .finally(() => {
                 this.loading = false;
-                this.uploaderLoading = false;
-                this.tagsLoading = false;
+                this.ownerLoading = false;
+                // this.photosLoading = false;
             });
     },
 };

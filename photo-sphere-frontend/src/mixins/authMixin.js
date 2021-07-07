@@ -2,7 +2,7 @@ import { mapState, mapGetters } from "vuex";
 
 const authMixin = {
     computed: {
-        ...mapState("user", ["id"]),
+        ...mapState("user", ["id", "avatar"]),
         ...mapGetters("auth", ["isLoggedIn"]),
         ...mapGetters("user", ["getFullName", "getInitials"]),
     },

@@ -1,60 +1,50 @@
 
 <template>
     <el-card
+        v-if="photoPath"
         shadow="hover"
         :body-style="{ padding: '0px', width: '200px' }"
         @click="viewDetails"
     >
-        <img :src="photo.image" class="image" />
+        <img :src="photoPath" class="image" />
         <div style="padding: 14px">
-            <span>{{ photo.title }}</span>
+            <span>{{ album.name }}</span>
         </div>
     </el-card>
 </template>
 
 <script>
+import { getPhotoDetails } from "@/api/photo.api";
+
 export default {
     props: {
-        photo: {
+        album: {
             type: Object,
             required: true,
         },
     },
     data() {
         return {
-            currentDate: new Date(),
+            photoPath: null,
         };
     },
     methods: {
         viewDetails() {
             this.$router.push({
-                name: "Photo-Details",
-                params: { id: this.photo.id },
+                name: "Album-Details",
+                params: { id: this.album.id },
             });
         },
+    },
+    created() {
+        getPhotoDetails(this.album.photos[0]).then((res) => {
+            this.photoPath = res.data.image;
+        });
     },
 };
 </script>
 
 <style lang="scss" scoped>
-.time {
-    font-size: 13px;
-    color: #999;
-}
-
-.bottom {
-    margin-top: 13px;
-    line-height: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.button {
-    padding: 0;
-    min-height: auto;
-}
-
 .image {
     width: 100%;
     height: 120px;

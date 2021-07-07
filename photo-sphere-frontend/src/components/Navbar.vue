@@ -25,16 +25,30 @@
                         <el-divider direction="vertical"></el-divider>
                     </el-menu-item>
                     <template v-if="isLoggedIn">
-                        <el-menu-item
+                        <el-submenu
                             index="3"
-                            :route="profileRoute"
-                            style="margin-right: 16px"
+                            style="margin-right: 16px; color: black"
                         >
-                            <el-avatar
-                                icon="el-icon-user-solid"
-                                size="small"
-                            ></el-avatar>
-                        </el-menu-item>
+                            <template #title>
+                                <el-avatar
+                                    icon="el-icon-user-solid"
+                                    size="small"
+                                ></el-avatar>
+                            </template>
+
+                            <el-menu-item
+                                class="profile-menu"
+                                index="2-1"
+                                :route="profileRoute"
+                                >Your profile</el-menu-item
+                            >
+                            <el-menu-item
+                                class="profile-menu"
+                                index="2-2"
+                                @click="logOut"
+                                >Log out</el-menu-item
+                            >
+                        </el-submenu>
                     </template>
                     <template v-else>
                         <el-menu-item index="3" route="/login">
@@ -83,6 +97,14 @@ span {
 
 .el-menu-item {
     padding: 0px;
+}
+
+.profile-menu {
+    color: darkslategrey !important;
+}
+
+.profile-menu:hover {
+    color: black !important;
 }
 
 .el-divider {

@@ -2,6 +2,12 @@ import httpClient from './httpClient';
 
 const END_POINT = '/user';
 
+const createProfile = (data) => httpClient.post(`${END_POINT}/`, data, {
+    headers: {
+        'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
+    },
+});
+
 // used to fetch available info immediately after social signup
 const getOwnProfile = () => httpClient.get(`${END_POINT}/me/`);
 
@@ -22,6 +28,7 @@ const searchProfile = (params) => httpClient.get(`${END_POINT}/search/`, {
 });
 
 export {
+    createProfile,
     getOwnProfile,
     getProfileById,
     updateProfile,

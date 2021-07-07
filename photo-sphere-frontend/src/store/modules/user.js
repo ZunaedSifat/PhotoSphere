@@ -40,12 +40,6 @@ const getters = {
             return '';
         }
     },
-    // isApproved(state) {
-    //     return state.approval_status === 'A';
-    // },
-    // hasEnoughInfo(state) {
-    //     return state.approval_status && state.approval_status !== 'N';
-    // }
 }
 
 const actions = {

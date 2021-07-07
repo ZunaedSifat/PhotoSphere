@@ -6,6 +6,7 @@
             </el-col>
             <el-col :offset="3" :span="6">
                 <el-form
+                    enctype="multipart/form-data"
                     ref="form"
                     :model="form"
                     :rules="rules"
@@ -13,6 +14,14 @@
                     status-icon
                     style="margin-top: 80px"
                 >
+                    <el-form-item label="Avatar" prop="avatar">
+                        <input
+                            type="file"
+                            id="avatar"
+                            ref="file"
+                            class="input is-rounded"
+                            @change="handleFileUpload"
+                    /></el-form-item>
                     <el-form-item label="First Name" prop="first_name">
                         <el-input v-model="form.first_name"></el-input>
                     </el-form-item>
@@ -71,6 +80,8 @@
 
 <script>
 var emailValidator = require("email-validator");
+import { createProfile } from "@/api/user.api";
+
 export default {
     data() {
         var validateEmail = (rule, value, callback) => {
@@ -93,7 +104,9 @@ export default {
             }
         };
         return {
+            loading: false,
             form: {
+                avatar: null,
                 first_name: "",
                 last_name: "",
                 email: "",
@@ -145,15 +158,29 @@ export default {
         };
     },
     methods: {
-        onSubmit() {
-            this.$refs.form.validate((valid) => {
-                if (valid) {
-                    alert("submit!");
-                } else {
-                    console.log("error submit!!");
-                    return false;
+        handleFileUpload() {
+            this.form.avatar = this.$refs.file.files[0];
+        },
+        async onSubmit() {
+            if (this.$refs.form.validate()) {
+                this.loading = true;
+                var formData = new FormData();
+                formData.append("first_name", this.form.first_name);
+                formData.append("last_name", this.form.last_name);
+                formData.append("email", this.form.email);
+                formData.append("password", this.form.password);
+                if (this.form.avatar) {
+                    formData.append("avatar", this.form.avatar);
                 }
-            });
+
+                try {
+                    await createProfile(formData);
+                    await this.$store.dispatch("user/fetchCurrentUserProfile");
+                } catch (error) {
+                    this.loading = false;
+                    console.log(error.response);
+                }
+            }
         },
     },
 };
