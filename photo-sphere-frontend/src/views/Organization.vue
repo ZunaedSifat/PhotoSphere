@@ -12,7 +12,7 @@
                 <el-container
                     style="justify-content: center; margin-bottom: 32px"
                 >
-                    <span>{{ getFullName }}</span>
+                    <span>Pixels Photographic Society</span>
                 </el-container>
             </el-col>
 
@@ -29,17 +29,14 @@
                     >
                 </el-row>
 
-                <template v-if="photosLoading">
-                    <div v-loading="photosLoading"></div>
-                </template>
-                <template v-else>
-                    <el-space alignment="start" size="medium" wrap>
-                        <photo-preview-card
-                            v-for="i in grid"
-                            :key="i"
-                            :photo="photos[i]"
-                        ></photo-preview-card>
-                    </el-space>
+                <template
+                    style="text-align: start"
+                    v-for="(member, i) in members"
+                    :key="i"
+                >
+                    <h4>{{ member.name }}</h4>
+
+                    <span> ---- {{ member.role }}</span>
                 </template>
             </el-col>
             <el-col :span="1">
@@ -69,7 +66,7 @@ import authMixin from "@/mixins/authMixin";
 import PhotoUploadDialog from "@/components/dialog/PhotoUploadDialog";
 import ExhibitionCreateDialog from "@/components/dialog/ExhibitionCreateDialog";
 import PhotoPreviewCard from "@/components/photo/PhotoPreviewCard";
-import { getOwnPhotos } from "@/api/photo.api";
+import { getUserPhotos } from "@/api/photo.api";
 
 export default {
     mixins: [authMixin],
@@ -85,11 +82,25 @@ export default {
             exhibitionCreate: false,
             photosLoading: false,
             photos: [],
+            members: [
+                {
+                    name: "Andrew NG",
+                    role: "President",
+                },
+                {
+                    name: "Christopher Yu",
+                    role: "Secretary",
+                },
+                {
+                    name: "Priyeta Saha",
+                    role: "Vice President",
+                },
+            ],
         };
     },
     created() {
         this.photosLoading = true;
-        getOwnPhotos(this.id)
+        getUserPhotos(this.id)
             .then((res) => {
                 console.log(res);
                 this.photos = res.data;

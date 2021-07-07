@@ -64,4 +64,9 @@ export default {
 .el-card:hover {
     cursor: pointer;
 }
+
+.el-card.is-hover-shadow:hover,
+.el-card.is-hover-shadow:focus {
+    box-shadow: 4px 4px 12px 0 rgb(0 0 0 / 20%);
+}
 </style>

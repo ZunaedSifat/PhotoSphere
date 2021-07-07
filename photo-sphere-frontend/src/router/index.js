@@ -6,6 +6,7 @@ import UserProfile from '@/views/UserProfile.vue'
 import Organization from '@/views/Organization.vue'
 import PhotoDetails from '@/views/PhotoDetails.vue'
 import AlbumDetails from '@/views/AlbumDetails.vue'
+import MarketPlace from '@/views/MarketPlace.vue'
 
 const routes = [{
         path: '/',
@@ -50,7 +51,7 @@ const routes = [{
     {
         path: '/marketplace',
         name: 'Marketplace',
-        component: Home
+        component: MarketPlace
     },
     {
         path: '/about',

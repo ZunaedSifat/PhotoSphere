@@ -244,6 +244,7 @@ export default {
 
                 const response = await uploadPhoto(formData);
                 console.log(response);
+                this.$emit("upload", response.data);
                 this.$emit("close");
             } catch (error) {
                 console.log(error.response);

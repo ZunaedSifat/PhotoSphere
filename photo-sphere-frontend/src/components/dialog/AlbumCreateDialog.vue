@@ -139,6 +139,7 @@ export default {
 
                 const response = await createAlbum(data);
                 console.log(response);
+                this.$emit("create", response.data);
                 this.$emit("close");
             } catch (error) {
                 console.log(error.response);

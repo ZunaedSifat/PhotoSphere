@@ -69,12 +69,14 @@
         </el-row>
         <photo-upload-dialog
             :dialog="photoUpload"
+            @upload="addNewPhoto"
             @close="photoUpload = false"
         ></photo-upload-dialog>
         <album-create-dialog
             v-if="photos.length != 0"
             :dialog="albumCreate"
             :photos="photos"
+            @create="addNewAlbum"
             @close="albumCreate = false"
         ></album-create-dialog>
         <el-dialog v-else title="Unable to create album"
@@ -88,7 +90,7 @@ import authMixin from "@/mixins/authMixin";
 import PhotoUploadDialog from "@/components/dialog/PhotoUploadDialog";
 import PhotoPreviewCard from "@/components/photo/PhotoPreviewCard";
 import AlbumPreviewCard from "@/components/photo/AlbumPreviewCard";
-import { getOwnPhotos } from "@/api/photo.api";
+import { getUserPhotos } from "@/api/photo.api";
 import { getUserAlbums } from "@/api/album.api";
 import AlbumCreateDialog from "../components/dialog/AlbumCreateDialog.vue";
 
@@ -110,9 +112,17 @@ export default {
             albums: [],
         };
     },
+    methods: {
+        addNewPhoto(photo) {
+            this.photos.push(photo);
+        },
+        addNewAlbum(album) {
+            this.albums.push(album);
+        },
+    },
     created() {
         this.photosLoading = true;
-        getOwnPhotos(this.$route.params.id)
+        getUserPhotos(this.$route.params.id)
             .then((res) => {
                 console.log(res);
                 this.photos = res.data;

@@ -15,18 +15,22 @@
                     background-color="inherit"
                     text-color="#fff"
                 >
-                    <el-menu-item index="1" route="/exhibitions">
+                    <el-menu-item index="1" route="/organization/1">
+                        <span>Organizations</span>
+                        <el-divider direction="vertical"></el-divider>
+                    </el-menu-item>
+                    <el-menu-item index="2" route="/exhibitions">
                         <span>Exhibitions</span>
                         <el-divider direction="vertical"></el-divider>
                     </el-menu-item>
 
-                    <el-menu-item index="2" route="/marketplace">
+                    <el-menu-item index="3" route="/marketplace">
                         <span>Marketplace</span>
                         <el-divider direction="vertical"></el-divider>
                     </el-menu-item>
                     <template v-if="isLoggedIn">
                         <el-submenu
-                            index="3"
+                            index="4"
                             style="margin-right: 16px; color: black"
                         >
                             <template #title>
@@ -38,13 +42,13 @@
 
                             <el-menu-item
                                 class="profile-menu"
-                                index="2-1"
+                                index="4-1"
                                 :route="profileRoute"
                                 >Your profile</el-menu-item
                             >
                             <el-menu-item
                                 class="profile-menu"
-                                index="2-2"
+                                index="4-2"
                                 @click="logOut"
                                 >Log out</el-menu-item
                             >

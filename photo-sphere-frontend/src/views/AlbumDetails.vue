@@ -46,10 +46,11 @@
                             >
                         </div>
                     </el-card>
-                    <template v-if="photosLoading !== 0">
-                        <div v-loading="photosLoading !== 0"></div>
+                    <template v-if="photosLoading">
+                        <div v-loading="photosLoading"></div>
                     </template>
                     <template v-else>
+                        <h4>All Photos</h4>
                         <el-space alignment="start" size="medium" wrap>
                             <photo-preview-card
                                 v-for="(photo, index) in photos"
@@ -105,7 +106,7 @@ export default {
             ownerName: null,
             topPhoto: null,
             photos: [],
-            photosLoading: 100,
+            photosLoading: false,
         };
     },
     methods: {
@@ -123,7 +124,7 @@ export default {
             .then((res) => {
                 console.log(res);
                 this.album = res.data;
-                this.photosLoading = this.album.photos.length;
+                this.photosLoading = true;
 
                 getProfileById(this.album.owner).then((user) => {
                     this.ownerName =
@@ -132,25 +133,24 @@ export default {
 
                 getPhotoDetails(this.album.photos[0]).then((res) => {
                     this.topPhoto = res.data.image;
-                    // this.photos.push(res.data);
+                    this.photos.push(res.data);
+                    getPhotoDetails(this.album.photos[1]).then((res) => {
+                        this.photos.push(res.data);
+                        this.photosLoading = false;
+                    });
                 });
 
-                // getPhotoDetails(this.album.photos[1]).then((res) => {
-
-                //     this.photos.push(res.data);
-                // });
-
-                console.log("left " + this.photosLoading);
-                for (let i = 0; i < this.album.photos.length; i++) {
-                    getPhotoDetails(this.album.photos[i]).then(
-                        (photoDetails) => {
-                            this.photos.push(photoDetails);
-                            console.log(photoDetails);
-                            this.photosLoading--;
-                            console.log("left " + this.photosLoading);
-                        }
-                    );
-                }
+                // console.log("left " + this.photosLoading);
+                // for (let i = 0; i < this.album.photos.length; i++) {
+                //     getPhotoDetails(this.album.photos[i]).then(
+                //         (photoDetails) => {
+                //             this.photos.push(photoDetails);
+                //             console.log(photoDetails);
+                //             this.photosLoading--;
+                //             console.log("left " + this.photosLoading);
+                //         }
+                //     );
+                // }
             })
             .catch((error) => console.log(error))
             .finally(() => {

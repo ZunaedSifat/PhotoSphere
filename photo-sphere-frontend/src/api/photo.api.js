@@ -9,16 +9,21 @@ const uploadPhoto = (data) => httpClient.post(`${END_POINT}/`, data, {
     },
 });
 
-const getOwnPhotos = (user) => httpClient.get(`${END_POINT}/`, {
+const getUserPhotos = (user) => httpClient.get(`${END_POINT}/`, {
     params: {
         'user': user
     }
+});
+
+const getFilteredPhotos = (params) => httpClient.get(`${END_POINT}/`, {
+    params
 });
 
 const getPhotoDetails = (id) => httpClient.get(`${END_POINT}/${id}`);
 
 export {
     uploadPhoto,
-    getOwnPhotos,
+    getUserPhotos,
+    getFilteredPhotos,
     getPhotoDetails,
 }
