@@ -28,16 +28,13 @@
                         >Add member</el-button
                     >
                 </el-row>
-
-                <template
-                    style="text-align: start"
-                    v-for="(member, i) in members"
-                    :key="i"
+                <el-descriptions :column="1" border>
+                    <template v-for="(member, i) in members" :key="i">
+                        <el-descriptions-item :label="member.name">
+                            {{ member.role }}
+                        </el-descriptions-item>
+                    </template></el-descriptions
                 >
-                    <h4>{{ member.name }}</h4>
-
-                    <span> ---- {{ member.role }}</span>
-                </template>
             </el-col>
             <el-col :span="1">
                 <el-divider direction="vertical"></el-divider>
@@ -53,6 +50,49 @@
                         >Create new exhibition</el-button
                     >
                 </el-row>
+                <el-card
+                    shadow="hover"
+                    :body-style="{ padding: '0px', width: '100%' }"
+                    style="margin-bottom: 8px"
+                    @click="viewDetails"
+                >
+                    <el-row type="flex">
+                        <el-col :span="8">
+                            <img
+                                src="../../images/feature_1.jpg"
+                                class="image"
+                            />
+                        </el-col>
+                        <el-col :span="12">
+                            <div style="padding: 14px; text-align: start">
+                                <h4>Focus</h4>
+                                <p>23 photos</p>
+                                <span>30 July - 15 August</span>
+                            </div></el-col
+                        >
+                    </el-row>
+                </el-card>
+                <el-card
+                    shadow="hover"
+                    :body-style="{ padding: '0px', width: '100%' }"
+                    @click="viewDetails"
+                >
+                    <el-row type="flex">
+                        <el-col :span="8">
+                            <img
+                                src="../../images/feature_2.jpg"
+                                class="image"
+                            />
+                        </el-col>
+                        <el-col :span="12">
+                            <div style="padding: 14px; text-align: start">
+                                <h4>Lights Out</h4>
+                                <p>44 photos</p>
+                                <span>15 July - 1 August</span>
+                            </div></el-col
+                        >
+                    </el-row>
+                </el-card>
             </el-col>
         </el-row>
         <exhibition-create-dialog
@@ -129,8 +169,31 @@ h3 {
     margin-right: 16px;
 }
 
-// .el-button {
-//     padding: 8px !important;
-//     height: 32px !important;
-// }
+.bottom {
+    margin-top: 13px;
+    line-height: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.button {
+    padding: 0;
+    min-height: auto;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.el-card:hover {
+    cursor: pointer;
+}
+
+.el-card.is-hover-shadow:hover,
+.el-card.is-hover-shadow:focus {
+    box-shadow: 4px 4px 12px 0 rgb(0 0 0 / 20%);
+}
 </style>
