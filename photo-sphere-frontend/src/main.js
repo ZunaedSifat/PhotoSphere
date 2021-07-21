@@ -7,12 +7,13 @@ import GAuth from 'vue3-google-oauth2'
 import installElementPlus from './plugins/element'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faPhone } from "@fortawesome/free-solid-svg-icons";
+import { faHeart as emptyReact } from "@fortawesome/free-regular-svg-icons";
+import { faPhone, faHeart, faShareAlt } from "@fortawesome/free-solid-svg-icons";
 import { faGoogle, faFacebook } from "@fortawesome/free-brands-svg-icons";
+library.add(emptyReact);
+library.add(faPhone, faHeart, faShareAlt);
+library.add(faGoogle, faFacebook);
 
-library.add(faPhone);
-library.add(faGoogle);
-library.add(faFacebook);
 
 const gAuthOptions = { clientId: process.env.VUE_APP_GOOGLE_OAUTH_CLIENT_ID, scope: 'profile email', prompt: 'select_account', fetch_basic_profile: true }
 

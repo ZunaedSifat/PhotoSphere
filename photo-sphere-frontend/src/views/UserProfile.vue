@@ -3,7 +3,9 @@
         <el-row type="flex">
             <el-col :span="6">
                 <el-avatar fit="fill" :size="160" style="margin: 16px 0px">
-                    <img src="../../images/profile.jpg" />
+                    <img v-if="avatar" :src="avatar" />
+
+                    <img v-else src="../../images/profile.jpg" />
                 </el-avatar>
                 <el-container style="justify-content: center">
                     <span>{{ getFullName }}</span>
@@ -28,37 +30,58 @@
                     <div v-loading="photosLoading"></div>
                 </template>
                 <template v-else>
-                    <el-row style="margin-bottom: 16px">
-                        <el-col
-                            :span="7"
-                            :offset="i == 0 ? 0 : 1"
-                            v-for="i in grid"
-                            :key="i"
-                        >
-                            <photo-preview-card
-                                :photo="photos[i]"
-                            ></photo-preview-card>
-                        </el-col>
-                    </el-row>
-                    <!-- <photo-preview-card
-                        v-for="(photo, index) in photos"
-                        :key="index"
-                        :photo="photo"
-                    ></photo-preview-card> -->
+                    <el-space alignment="start" size="medium" wrap>
+                        <photo-preview-card
+                            v-for="(photo, index) in photos"
+                            :key="index"
+                            :photo="photo"
+                        ></photo-preview-card>
+                    </el-space>
                 </template>
 
                 <el-row type="flex" align="middle">
                     <h3>Albums</h3>
-                    <el-button size="mini" icon="el-icon-folder-add"
+                    <el-button
+                        size="mini"
+                        icon="el-icon-folder-add"
+                        @click="albumCreate = true"
+                        @close="albumCreate = false"
                         >Create new album</el-button
                     >
                 </el-row>
+
+                <template v-if="albumsLoading">
+                    <div v-loading="albumsLoading"></div>
+                </template>
+                <template v-else>
+                    <el-space alignment="start" size="medium" wrap>
+                        <album-preview-card
+                            v-for="(album, index) in albums"
+                            :key="index"
+                            :album="album"
+                        ></album-preview-card>
+                    </el-space>
+                </template>
             </el-col>
             <el-col :span="1">
                 <el-divider direction="vertical"></el-divider>
             </el-col>
         </el-row>
-        <photo-upload-dialog :dialog="photoUpload"></photo-upload-dialog>
+        <photo-upload-dialog
+            :dialog="photoUpload"
+            @upload="addNewPhoto"
+            @close="photoUpload = false"
+        ></photo-upload-dialog>
+        <album-create-dialog
+            v-if="photos.length != 0"
+            :dialog="albumCreate"
+            :photos="photos"
+            @create="addNewAlbum"
+            @close="albumCreate = false"
+        ></album-create-dialog>
+        <el-dialog v-else title="Unable to create album"
+            >Please upload some photos first</el-dialog
+        >
     </el-container>
 </template>
 
@@ -66,35 +89,55 @@
 import authMixin from "@/mixins/authMixin";
 import PhotoUploadDialog from "@/components/dialog/PhotoUploadDialog";
 import PhotoPreviewCard from "@/components/photo/PhotoPreviewCard";
-import { getOwnPhotos } from "@/api/photo.api";
+import AlbumPreviewCard from "@/components/photo/AlbumPreviewCard";
+import { getUserPhotos } from "@/api/photo.api";
+import { getUserAlbums } from "@/api/album.api";
+import AlbumCreateDialog from "../components/dialog/AlbumCreateDialog.vue";
 
 export default {
     mixins: [authMixin],
     components: {
         PhotoUploadDialog,
         PhotoPreviewCard,
+        AlbumPreviewCard,
+        AlbumCreateDialog,
     },
     data() {
         return {
-            grid: [0, 1, 2],
             photoUpload: false,
+            albumCreate: false,
             photosLoading: false,
+            albumsLoading: false,
             photos: [],
+            albums: [],
         };
+    },
+    methods: {
+        addNewPhoto(photo) {
+            this.photos.push(photo);
+        },
+        addNewAlbum(album) {
+            this.albums.push(album);
+        },
     },
     created() {
         this.photosLoading = true;
-        getOwnPhotos(this.id)
+        getUserPhotos(this.$route.params.id)
             .then((res) => {
                 console.log(res);
                 this.photos = res.data;
-                this.grid = [];
-                for (var i = 0; i < this.photos.length; i++) {
-                    this.grid.push(i);
-                }
             })
             .catch((error) => console.log(error))
             .finally(() => (this.photosLoading = false));
+
+        this.albumsLoading = true;
+        getUserAlbums(this.$route.params.id)
+            .then((res) => {
+                console.log(res);
+                this.albums = res.data;
+            })
+            .catch((error) => console.log(error))
+            .finally(() => (this.albumsLoading = false));
     },
 };
 </script>

@@ -15,26 +15,44 @@
                     background-color="inherit"
                     text-color="#fff"
                 >
-                    <el-menu-item index="1" route="/exhibitions">
+                    <el-menu-item index="1" route="/organization/1">
+                        <span>Organizations</span>
+                        <el-divider direction="vertical"></el-divider>
+                    </el-menu-item>
+                    <el-menu-item index="2" route="/exhibitions">
                         <span>Exhibitions</span>
                         <el-divider direction="vertical"></el-divider>
                     </el-menu-item>
 
-                    <el-menu-item index="2" route="/marketplace">
+                    <el-menu-item index="3" route="/marketplace">
                         <span>Marketplace</span>
                         <el-divider direction="vertical"></el-divider>
                     </el-menu-item>
                     <template v-if="isLoggedIn">
-                        <el-menu-item
-                            index="3"
-                            :route="profileRoute"
-                            style="margin-right: 16px"
+                        <el-submenu
+                            index="4"
+                            style="margin-right: 16px; color: black"
                         >
-                            <el-avatar
-                                icon="el-icon-user-solid"
-                                size="small"
-                            ></el-avatar>
-                        </el-menu-item>
+                            <template #title>
+                                <el-avatar
+                                    icon="el-icon-user-solid"
+                                    size="small"
+                                ></el-avatar>
+                            </template>
+
+                            <el-menu-item
+                                class="profile-menu"
+                                index="4-1"
+                                :route="profileRoute"
+                                >Your profile</el-menu-item
+                            >
+                            <el-menu-item
+                                class="profile-menu"
+                                index="4-2"
+                                @click="logOut"
+                                >Log out</el-menu-item
+                            >
+                        </el-submenu>
                     </template>
                     <template v-else>
                         <el-menu-item index="3" route="/login">
@@ -83,6 +101,14 @@ span {
 
 .el-menu-item {
     padding: 0px;
+}
+
+.profile-menu {
+    color: darkslategrey !important;
+}
+
+.profile-menu:hover {
+    color: black !important;
 }
 
 .el-divider {

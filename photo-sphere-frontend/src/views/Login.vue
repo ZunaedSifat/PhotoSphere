@@ -108,14 +108,6 @@ export default {
             if (this.$route.params.nextUrl != null) {
                 this.$router.replace(this.$route.params.nextUrl);
             } else {
-                // if (this.hasEnoughInfo) {
-                //     this.$router.replace({
-                //         name: "profile",
-                //         params: { uuid: this.uuid },
-                //     });
-                // } else {
-                //     this.$router.replace("/signup/social");
-                // }
                 this.$router.replace({
                     name: "User-Profile",
                     params: { id: this.id },
@@ -133,11 +125,6 @@ export default {
             try {
                 await this.$store.dispatch("auth/exchangeSocialToken", params);
                 await this.$store.dispatch("user/fetchCurrentUserProfile");
-                // if (!this.isApproved) {
-                //     await this.$store.dispatch(
-                //         "registration/fetchRegistrationDetails"
-                //     );
-                // }
             } catch (error) {
                 console.log(error);
             } finally {

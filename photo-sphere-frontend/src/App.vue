@@ -6,9 +6,9 @@
         <el-main>
             <router-view></router-view>
         </el-main>
-        <el-footer v-if="showFooter">
+        <!-- <el-footer v-if="showFooter">
             <custom-footer></custom-footer>
-        </el-footer>
+        </el-footer> -->
     </el-container>
 </template>
 
