@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'photos',
     'albums',
     'organizations',
+    'exhibitions',
 ]
 
 MIDDLEWARE = [
