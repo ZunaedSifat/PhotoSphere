@@ -1,3 +1,12 @@
 from django.contrib import admin
+from exhibitions.models import Exhibition, ExhibitionEntry
 
-# Register your models here.
+
+@admin.register(Exhibition)
+class ExhibitionAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(ExhibitionEntry)
+class ExhibitionEntryAdmin(admin.ModelAdmin):
+    pass
