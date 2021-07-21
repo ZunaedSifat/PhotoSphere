@@ -15,3 +15,14 @@ class OrganizationDetailsPermission(permissions.BasePermission):
             raise NotAuthenticated()
 
         return obj.members.filter(member=request.user, role=OrganizationMemberTypes.ADMIN).exists()
+
+
+class OrganizationMemberPermission(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+
+        if not request.user.is_authenticated:
+            raise NotAuthenticated()
+
+        return obj.organization.members.filter(member=request.user, role=OrganizationMemberTypes.ADMIN).exists()
