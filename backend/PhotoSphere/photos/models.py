@@ -47,7 +47,7 @@ class Photo(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     likes = models.ManyToManyField(to=User, related_name='liked_photos')
     like_count = models.IntegerField(default=0)
-    tags = models.ManyToManyField(to=Tag, related_name='tagged_photos')
+    tags = models.ManyToManyField(to=Tag, related_name='tagged_photos', null=True, blank=True)
 
     def __str__(self):
         return self.title

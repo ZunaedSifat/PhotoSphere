@@ -40,6 +40,7 @@ urlpatterns = [
     path('user/', include('user.urls')),
     path('photo/', include('photos.urls')),
     path('album/', include('albums.urls')),
+    path('organization/', include('organizations.urls')),
 ]
 
 if settings.DEBUG:
