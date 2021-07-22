@@ -36,7 +36,7 @@ class FollowingListAPIView(views.APIView):
     def get(self, request, format=None):
         following = request.user.profile.following_list.all()
         return response.Response(
-            data={'following': following},
+            data={'following': [item.id for item in following]},
             status=status.HTTP_200_OK
         )
 
@@ -46,7 +46,7 @@ class FollowerListAPIView(views.APIView):
     def get(self, request, format=None):
         followers = request.user.follower_list.all()
         return response.Response(
-            data={'followers': followers},
+            data={'followers': [item.id for item in followers]},
             status=status.HTTP_200_OK
         )
 

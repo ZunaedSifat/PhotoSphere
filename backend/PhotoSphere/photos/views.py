@@ -18,40 +18,60 @@ class PhotoListCreateAPIView(generics.ListCreateAPIView):
         serializer.save(uploader=self.request.user.profile)
 
     def filter_queryset(self, queryset):
-        params = self.request.query_params
-        if 'user' in params:
-            try:
-                user = int(params.get('user'))
-                queryset = queryset.filter(uploader__user=user)
-            except:
-                pass
+        query_params = self.request.query_params
 
-        if 'remove_my' in params:
-            remove_my = params.get('remove_my') != 'false'
+        try:
+            user = int(query_params['user'])
+            queryset = queryset.filter(uploader__user=user)
+        except:
+            pass
+
+        try:
+            remove_my = query_params['remove_my'] != 'false'
             if remove_my:
                 queryset = queryset.filter(~Q(uploader__user=self.request.user))
+        except:
+            pass
 
-        if 'for_sale' in params:
-            for_sale = params.get('for_sale') != 'false'
+        try:
+            for_sale = query_params['for_sale'] != 'false'
             queryset = queryset.filter(for_sale=for_sale)
+        except:
+            pass
 
-        if 'is_digital' in params:
-            is_digital = params.get('is_digital') != 'false'
+        try:
+            is_digital = query_params['is_digital'] != 'false'
             queryset = queryset.filter(is_digital=is_digital)
+        except:
+            pass
 
-        if 'time_low' in params:
-            time_low = datetime.datetime.fromisoformat(params.get('time_low'))
+        try:
+            time_low = datetime.datetime.fromisoformat(query_params['time_low'])
             queryset = queryset.filter(created_at__gte=time_low)
+        except:
+            pass
 
-        if 'time_hi' in params:
-            time_hi = datetime.datetime.fromisoformat(params.get('time_hi'))
+        try:
+            time_hi = datetime.datetime.fromisoformat(query_params['time_hi'])
             queryset = queryset.filter(created_at__lte=time_hi)
+        except:
+            pass
 
-        if 'order_by' in params:
-            try:
-                queryset = queryset.order_by(params.get('order_by'))
-            except:
-                pass
+        try:
+            print('came here')
+            print(self.request.user, self.request.user.profile.following_list.all())
+
+            following = int(query_params['following'])
+            print(following, self.request.user, self.request.user.profile.following_list.all())
+            query = Q(uploader__user__in=self.request.user.profile.following_list.all())
+            queryset = queryset.filter(query if following else ~query)
+        except:
+            pass
+
+        try:
+            queryset = queryset.order_by(query_params['order_by'])
+        except:
+            pass
 
         return queryset
 
