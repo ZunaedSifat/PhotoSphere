@@ -43,7 +43,7 @@ urlpatterns = [
     path('album/', include('albums.urls')),
     path('organization/', include('organizations.urls')),
     path('exhibition/', include('exhibitions.urls')),
-    path('/success/', payment_success, name='success'),
+    path('order/', include('orders.urls')),
 ]
 
 if settings.DEBUG:

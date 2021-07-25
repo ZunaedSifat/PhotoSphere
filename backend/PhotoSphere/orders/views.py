@@ -23,7 +23,7 @@ def payment_failed(request):
 
 
 @csrf_exempt
-def payment_failed(request):
+def payment_canceled(request):
     transaction_id = request.POST.get('tran_id')
     order = get_object_or_404(Order, transaction_id=transaction_id)
     return HttpResponseRedirect(redirect_to=f'http://localhost:8080/payment/cancel/{order.id}')
