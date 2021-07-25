@@ -7,6 +7,7 @@ from rest_framework import permissions, response, views
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+from orders.views import payment_success
 
 
 schema_view = get_schema_view(
@@ -41,7 +42,8 @@ urlpatterns = [
     path('photo/', include('photos.urls')),
     path('album/', include('albums.urls')),
     path('organization/', include('organizations.urls')),
-    path('exhibition/', include('exhibitions.urls'))
+    path('exhibition/', include('exhibitions.urls')),
+    path('/success/', payment_success, name='success'),
 ]
 
 if settings.DEBUG:

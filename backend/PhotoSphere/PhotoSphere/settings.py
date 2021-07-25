@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'albums',
     'organizations',
     'exhibitions',
+    'orders',
 ]
 
 MIDDLEWARE = [
