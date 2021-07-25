@@ -23,7 +23,6 @@ class Order(models.Model):
 
     is_paid = models.BooleanField(default=False, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    valid_till = models.DateTimeField(default=get_valid_till)
     redirection_url = models.URLField(blank=True)
 
     # todo: validate the order
@@ -35,7 +34,6 @@ class Order(models.Model):
         return sslcommerze.SSLPaymentSessionGenerator(
             transaction_id=self.transaction_id,
             total_amount=self.photo.price,
-            host_name='http://tba.com/',
             is_sandbox=True
         ).add_customer_details(
             name=self.user.get_full_name() or "Admin User",
