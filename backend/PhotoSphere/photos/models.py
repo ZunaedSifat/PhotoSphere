@@ -45,7 +45,7 @@ class Photo(models.Model):
     is_digital = models.BooleanField()
     price = models.DecimalField(max_digits=8, decimal_places=2)
     created_at = models.DateTimeField(auto_now=True)
-    likes = models.ManyToManyField(to=User, related_name='liked_photos')
+    likes = models.ManyToManyField(to=User, related_name='liked_photos', blank=True)
     like_count = models.IntegerField(default=0)
     tags = models.ManyToManyField(to=Tag, related_name='tagged_photos', blank=True)
 

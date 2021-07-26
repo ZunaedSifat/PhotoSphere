@@ -15,7 +15,7 @@ def get_valid_till():
 class Order(models.Model):
     transaction_id = models.UUIDField(max_length=36, default=uuid4, editable=False, unique=True)
     photo = models.ForeignKey(to=Photo, on_delete=models.PROTECT, related_name='order')
-    user = models.ForeignKey(to=get_user_model(), on_delete=models.PROTECT)
+    user = models.ForeignKey(to=get_user_model(), on_delete=models.PROTECT, blank=True)
 
     phone = models.CharField(max_length=16)
     address = models.CharField(max_length=255)
