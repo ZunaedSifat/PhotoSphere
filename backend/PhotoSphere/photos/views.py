@@ -65,6 +65,18 @@ class PhotoListCreateAPIView(generics.ListCreateAPIView):
             pass
 
         try:
+            price_low = float(query_params['price_low'])
+            queryset = queryset.filter(price__gte=price_low)
+        except:
+            pass
+
+        try:
+            price_hi = float(query_params['price_hi'])
+            queryset = queryset.filter(price__lte=price_hi)
+        except:
+            pass
+
+        try:
             following = int(query_params['following'])
             query = Q(uploader__user__in=self.request.user.profile.following_list.all())
             queryset = queryset.filter(query if following else ~query)
@@ -73,7 +85,6 @@ class PhotoListCreateAPIView(generics.ListCreateAPIView):
 
         try:
             queryset = queryset.order_by(query_params['order_by'])
-            print('ordered properly')
         except:
             pass
 
