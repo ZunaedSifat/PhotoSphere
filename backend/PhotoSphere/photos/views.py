@@ -2,7 +2,7 @@ import datetime
 
 from django.db.models import Q
 from rest_framework import generics, views, status, response, exceptions
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from photos.serializers import PhotoSerializer, TagSerializer
 from photos.models import Photo, Tag
@@ -126,3 +126,8 @@ class TagListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
 
+
+class TagRetrieveAPIView(generics.RetrieveAPIView):
+    permission_classes = (AllowAny, )
+    serializer_class = TagSerializer
+    queryset = Tag.objects.all()
