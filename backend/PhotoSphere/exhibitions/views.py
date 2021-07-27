@@ -1,7 +1,8 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView
+
 from exhibitions.permissions import ExhibitionPermission, ExhibitionEntryPermission
-from exhibitions.serializers import ExhibitionSerializer, ExhibitionEntrySerializer
-from exhibitions.models import Exhibition, ExhibitionEntry
+from exhibitions.serializers import ExhibitionSerializer, ExhibitionEntrySerializer, ThemeSerializer
+from exhibitions.models import Exhibition, ExhibitionEntry, Theme
 
 
 class ExhibitionListCreateAPIView(ListCreateAPIView):
@@ -35,3 +36,15 @@ class ExhibitionEntryRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     permission_classes = (ExhibitionEntryPermission, )
     serializer_class = ExhibitionEntrySerializer
     queryset = ExhibitionEntry.objects.all()
+
+
+class ThemeListCreateAPIView(ListCreateAPIView):
+    permission_classes = (ExhibitionEntryPermission, )
+    serializer_class = ThemeSerializer
+    queryset = Theme.objects.all()
+
+
+class ThemeRetrieveAPIView(RetrieveAPIView):
+    permission_classes = (ExhibitionEntryPermission,)
+    serializer_class = ThemeSerializer
+    queryset = Theme.objects.all()
