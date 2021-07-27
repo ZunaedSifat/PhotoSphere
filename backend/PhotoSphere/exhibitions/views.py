@@ -31,6 +31,15 @@ class ExhibitionEntryListCreateAPIView(ListCreateAPIView):
     serializer_class = ExhibitionEntrySerializer
     queryset = ExhibitionEntry.objects.all()
 
+    def filter_queryset(self, queryset):
+        try:
+            exhibition_id = int(self.request.query_params['exhibition'])
+            queryset = queryset.filter(exhibition__id=exhibition_id)
+        except:
+            pass
+
+        return queryset
+
 
 class ExhibitionEntryRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     permission_classes = (ExhibitionEntryPermission, )
