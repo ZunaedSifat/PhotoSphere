@@ -8,8 +8,25 @@ const createExhibition = (data) => httpClient.post(`${END_POINT}/`, data, {
     },
 });
 
-const getOrganizationExhibitions = (organization) => httpClient.get(`${END_POINT}/`);
+const getAllExhibitions = () => httpClient.get(`${END_POINT}/`);
+
+const getOrganizationExhibitions = (organization) => httpClient.get(`${END_POINT}/`, {
+    params: {
+        organizer: organization
+    }
+});
+
+const createExhibitionEntry = (data) => httpClient.post(`${END_POINT}/entry/`, data);
+
+const getExhibitionEntries = (id) => httpClient.get(`${END_POINT}/entry/`);
+
+const getExhibitionDetails = (id) => httpClient.get(`${END_POINT}/${id}/`);
 
 export {
     createExhibition,
+    getAllExhibitions,
+    getOrganizationExhibitions,
+    createExhibitionEntry,
+    getExhibitionEntries,
+    getExhibitionDetails
 }

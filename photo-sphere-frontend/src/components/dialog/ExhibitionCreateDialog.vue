@@ -2,7 +2,7 @@
     <el-dialog
         v-model="dialog"
         title="Create New Exhibition"
-        width="60%"
+        width="50%"
         show-close
         :before-close="onClose"
     >
@@ -129,15 +129,19 @@ export default {
                 formData.append("entry_fee", this.form.entryFee);
                 formData.append(
                     "start_date",
-                    new DateTime(this.form.startDate)
+                    new Date(this.form.startDate).toISOString()
                 );
-                formData.append("end_date", new DateTime(this.form.endDate));
+                formData.append(
+                    "end_date",
+                    new Date(this.form.endDate).toISOString()
+                );
                 if (this.form.avatar) {
                     formData.append("avatar", this.form.avatar);
                 }
 
                 const response = await createExhibition(formData);
                 console.log(response);
+                this.$emit("create", response.data);
             } catch (error) {
                 console.log(error.response);
             } finally {

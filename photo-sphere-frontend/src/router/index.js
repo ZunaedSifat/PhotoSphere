@@ -10,6 +10,9 @@ import ExhibitionDetails from '@/views/ExhibitionDetails.vue'
 import PhotoDetails from '@/views/PhotoDetails.vue'
 import AlbumDetails from '@/views/AlbumDetails.vue'
 import MarketPlace from '@/views/MarketPlace.vue'
+import Success from '@/components/payment/Success.vue'
+import Failure from '@/components/payment/Failure.vue'
+import Cancel from '@/components/payment/Cancel.vue'
 
 
 const routes = [{
@@ -66,6 +69,21 @@ const routes = [{
         path: '/marketplace',
         name: 'Marketplace',
         component: MarketPlace
+    },
+    {
+        path: '/payment/success/:id',
+        name: 'Order-Success',
+        component: Success
+    },
+    {
+        path: '/payment/failed/:id',
+        name: 'Order-Failure',
+        component: Failure
+    },
+    {
+        path: '/payment/canceled/:id',
+        name: 'Order-Cancel',
+        component: Cancel
     },
     {
         path: '/about',
