@@ -36,7 +36,7 @@ def format_tag_name_handler(sender, instance, *args, **kwargs):
 
 
 class Photo(models.Model):
-    uploader = models.ForeignKey(to=Profile, on_delete=models.PROTECT, related_name='uploaded_photos', blank=True)
+    owner = models.ForeignKey(to=Profile, on_delete=models.PROTECT, related_name='uploaded_photos', blank=True)
     title = models.CharField(max_length=100)
     caption = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='photos/')

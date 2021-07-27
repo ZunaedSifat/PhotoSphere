@@ -22,4 +22,4 @@ class PhotoDetailsPermission(permissions.BasePermission):
 
         if not request.user.is_authenticated:
             raise NotAuthenticated()
-        return obj.uploader.user.id == request.user.id
+        return obj.owner.user.id == request.user.id

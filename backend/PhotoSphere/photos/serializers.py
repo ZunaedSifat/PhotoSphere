@@ -7,7 +7,7 @@ class PhotoSerializer(serializers.ModelSerializer):
         model = Photo
         fields = (
             'id',
-            'uploader',
+            'owner',
             'title',
             'caption',
             'tags',
