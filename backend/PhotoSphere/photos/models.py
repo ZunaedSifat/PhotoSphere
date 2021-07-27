@@ -79,12 +79,14 @@ class Photo(models.Model):
 def save_resized_image(instance, image_field, size, add_watermark=False):
     file, ext = os.path.splitext(instance.image.path)
     with Image.open(instance.image.path) as image:
+        if image.mode in ("RGBA", "P"):
+            image = image.convert("RGB")
         image.thumbnail(size)
         if add_watermark:
             draw = ImageDraw.Draw(image)
             text = "PhotoSphere.com"
             draw.text((16, 16), text, font=ImageFont.load_default())
-        image.save(os.path.join(settings.MEDIA_ROOT, file) + f"_{size}{'w' if add_watermark else 'o'}{ext}", ext[1:])
+        image.save(os.path.join(settings.MEDIA_ROOT, file) + f"_{size}{'w' if add_watermark else 'o'}{ext}", 'JPEG')
 
         image_path = "file://" + os.path.join(settings.MEDIA_ROOT, f"{file}_{size}{'w' if add_watermark else 'o'}{ext}")
         result = urllib.request.urlretrieve(image_path)
