@@ -1,6 +1,6 @@
 import string
 import os
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import urllib
 
 from django.core.files import File
@@ -46,6 +46,11 @@ class Photo(models.Model):
     optimized_image_512 = models.ImageField(upload_to='optimized/', null=True, blank=True)
     optimized_image_1024 = models.ImageField(upload_to='optimized/', null=True, blank=True)
 
+    watermarked_optimized_image_128 = models.ImageField(upload_to='watermarked_optimized/', null=True, blank=True)
+    watermarked_optimized_image_256 = models.ImageField(upload_to='watermarked_optimized/', null=True, blank=True)
+    watermarked_optimized_image_512 = models.ImageField(upload_to='watermarked_optimized/', null=True, blank=True)
+    watermarked_optimized_image_1024 = models.ImageField(upload_to='watermarked_optimized/', null=True, blank=True)
+
     for_sale = models.BooleanField()
     is_digital = models.BooleanField()
     price = models.DecimalField(max_digits=8, decimal_places=2)
@@ -70,12 +75,17 @@ class Photo(models.Model):
         self.save()
 
 
-def save_resized_image(instance, image_field, size):
+def save_resized_image(instance, image_field, size, add_watermark=False):
     file, ext = os.path.splitext(instance.image.path)
     with Image.open(instance.image.path) as image:
         image.thumbnail(size)
-        image.save(os.path.join(settings.MEDIA_ROOT, file) + f"_{size}{ext}", ext[1:])
-        image_path = "file://" + os.path.join(settings.MEDIA_ROOT, f'{file}_{size}{ext}')
+        if add_watermark:
+            draw = ImageDraw.Draw(image)
+            text = "PhotoSphere.com"
+            draw.text((16, 16), text, font=ImageFont.load_default())
+        image.save(os.path.join(settings.MEDIA_ROOT, file) + f"_{size}{'w' if add_watermark else 'o'}{ext}", ext[1:])
+
+        image_path = "file://" + os.path.join(settings.MEDIA_ROOT, f"{file}_{size}{'w' if add_watermark else 'o'}{ext}")
         result = urllib.request.urlretrieve(image_path)
         image_field.save(
             os.path.basename(image_path),
@@ -91,3 +101,8 @@ def add_optimized_version(sender, instance, created, **kwargs):
         save_resized_image(instance=instance, image_field=instance.optimized_image_256, size=(256, 256))
         save_resized_image(instance=instance, image_field=instance.optimized_image_512, size=(512, 512))
         save_resized_image(instance=instance, image_field=instance.optimized_image_1024, size=(1024, 1024))
+
+        save_resized_image(instance=instance, image_field=instance.watermarked_optimized_image_128, size=(128, 128), add_watermark=True)
+        save_resized_image(instance=instance, image_field=instance.watermarked_optimized_image_256, size=(256, 256), add_watermark=True)
+        save_resized_image(instance=instance, image_field=instance.watermarked_optimized_image_512, size=(512, 512), add_watermark=True)
+        save_resized_image(instance=instance, image_field=instance.watermarked_optimized_image_1024, size=(1024, 1024), add_watermark=True)

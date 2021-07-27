@@ -16,6 +16,10 @@ class PhotoSerializer(serializers.ModelSerializer):
             'optimized_image_256',
             'optimized_image_512',
             'optimized_image_1024',
+            'watermarked_optimized_image_128',
+            'watermarked_optimized_image_256',
+            'watermarked_optimized_image_512',
+            'watermarked_optimized_image_1024',
             'for_sale',
             'is_digital',
             'price',
@@ -28,6 +32,10 @@ class PhotoSerializer(serializers.ModelSerializer):
             'optimized_image_256',
             'optimized_image_512',
             'optimized_image_1024'
+            'watermarked_optimized_image_128',
+            'watermarked_optimized_image_256',
+            'watermarked_optimized_image_512',
+            'watermarked_optimized_image_1024',
         ]
 
 
