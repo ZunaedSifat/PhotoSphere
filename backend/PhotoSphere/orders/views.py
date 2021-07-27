@@ -15,7 +15,7 @@ def payment_success(request):
     order = get_object_or_404(Order, transaction_id=transaction_id)
     order.is_paid = True
     order.save()
-    order.photo.uploader = order.user.profile
+    order.photo.owner = order.user.profile
     order.photo.for_sale = False
     order.photo.save()
     return HttpResponseRedirect(redirect_to=f'http://localhost:8080/payment/success/{order.id}')

@@ -7,7 +7,7 @@ class PhotoSerializer(serializers.ModelSerializer):
         model = Photo
         fields = (
             'id',
-            'uploader',
+            'owner',
             'title',
             'caption',
             'tags',
@@ -16,11 +16,16 @@ class PhotoSerializer(serializers.ModelSerializer):
             'optimized_image_256',
             'optimized_image_512',
             'optimized_image_1024',
+            'watermarked_optimized_image_128',
+            'watermarked_optimized_image_256',
+            'watermarked_optimized_image_512',
+            'watermarked_optimized_image_1024',
             'for_sale',
             'is_digital',
             'price',
             'created_at',
-            'like_count'
+            'like_count',
+            'exhibition_entry_count'
         )
         read_only_fields = [
             'id',
@@ -28,6 +33,11 @@ class PhotoSerializer(serializers.ModelSerializer):
             'optimized_image_256',
             'optimized_image_512',
             'optimized_image_1024'
+            'watermarked_optimized_image_128',
+            'watermarked_optimized_image_256',
+            'watermarked_optimized_image_512',
+            'watermarked_optimized_image_1024',
+            'exhibition_entry_count',
         ]
 
 

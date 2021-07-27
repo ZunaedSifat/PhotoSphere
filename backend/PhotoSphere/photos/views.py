@@ -15,7 +15,7 @@ class PhotoListCreateAPIView(generics.ListCreateAPIView):
     queryset = Photo.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save(uploader=self.request.user.profile)
+        serializer.save(owner=self.request.user.profile)
 
     def filter_queryset(self, queryset):
         query_params = self.request.query_params
@@ -29,14 +29,14 @@ class PhotoListCreateAPIView(generics.ListCreateAPIView):
 
         try:
             user = int(query_params['user'])
-            queryset = queryset.filter(uploader__user=user)
+            queryset = queryset.filter(owner__user=user)
         except:
             pass
 
         try:
             remove_my = query_params['remove_my'] != 'false'
             if remove_my:
-                queryset = queryset.filter(~Q(uploader__user=self.request.user))
+                queryset = queryset.filter(~Q(owner__user=self.request.user))
         except:
             pass
 
@@ -65,8 +65,20 @@ class PhotoListCreateAPIView(generics.ListCreateAPIView):
             pass
 
         try:
+            price_low = float(query_params['price_low'])
+            queryset = queryset.filter(price__gte=price_low)
+        except:
+            pass
+
+        try:
+            price_hi = float(query_params['price_hi'])
+            queryset = queryset.filter(price__lte=price_hi)
+        except:
+            pass
+
+        try:
             following = int(query_params['following'])
-            query = Q(uploader__user__in=self.request.user.profile.following_list.all())
+            query = Q(owner__user__in=self.request.user.profile.following_list.all())
             queryset = queryset.filter(query if following else ~query)
         except:
             pass
@@ -85,7 +97,7 @@ class PhotoDetailsAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Photo.objects.all()
 
     def perform_update(self, serializer):
-        serializer.save(uploader=self.request.user.profile)
+        serializer.save(owner=self.request.user.profile)
 
 
 class PhotoLikeView(views.APIView):

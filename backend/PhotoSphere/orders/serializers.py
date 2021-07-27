@@ -23,10 +23,10 @@ class OrderSerializer(serializers.ModelSerializer):
         print(attrs, self.context)
         attrs = super(OrderSerializer, self).validate(attrs)
         print(attrs.get('user'))
-        print(attrs.get('photo').uploader.user)
+        print(attrs.get('photo').owner.user)
 
         user = self.context.get('request').user
-        if user.id == attrs.get('photo').uploader.user.id:
+        if user.id == attrs.get('photo').owner.user.id:
             raise serializers.ValidationError({'user': "Can't buy own photo"})
         if not attrs.get('photo').for_sale:
             raise serializers.ValidationError({'photo': "This photo is not for sale"})
