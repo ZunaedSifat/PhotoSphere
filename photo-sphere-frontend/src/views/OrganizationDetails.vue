@@ -67,51 +67,53 @@
                             >Create new exhibition</el-button
                         >
                     </el-row>
-                    <el-card
-                        shadow="hover"
-                        :body-style="{ padding: '0px', width: '100%' }"
-                        style="margin-bottom: 8px"
-                        @click="viewDetails(0)"
-                    >
-                        <el-row type="flex">
-                            <el-col :span="8">
-                                <img
-                                    src="../../images/feature_1.jpg"
-                                    class="image"
-                                    oncontextmenu="return false;"
-                                />
-                            </el-col>
-                            <el-col :span="12">
-                                <div style="padding: 14px; text-align: start">
-                                    <h4>Focus</h4>
-                                    <p>23 photos</p>
-                                    <span>30 July - 15 August</span>
-                                </div></el-col
-                            >
-                        </el-row>
-                    </el-card>
-                    <el-card
-                        shadow="hover"
-                        :body-style="{ padding: '0px', width: '100%' }"
-                        @click="viewDetails(0)"
-                    >
-                        <el-row type="flex">
-                            <el-col :span="8">
-                                <img
-                                    src="../../images/feature_2.jpg"
-                                    class="image"
-                                    oncontextmenu="return false;"
-                                />
-                            </el-col>
-                            <el-col :span="12">
-                                <div style="padding: 14px; text-align: start">
-                                    <h4>Lights Out</h4>
-                                    <p>44 photos</p>
-                                    <span>15 July - 1 August</span>
-                                </div></el-col
-                            >
-                        </el-row>
-                    </el-card>
+                    <template v-if="exhibitionsLoading">
+                        <div v-loading="exhibitionsLoading"></div>
+                    </template>
+                    <template v-else>
+                        <el-card
+                            shadow="hover"
+                            :body-style="{ padding: '0px', width: '100%' }"
+                            style="margin-bottom: 8px"
+                            v-for="exhibition in exhibitions"
+                            :key="exhibition.id"
+                            @click="viewDetails(exhibition.id)"
+                        >
+                            <el-row type="flex">
+                                <el-col :span="8">
+                                    <img
+                                        :src="exhibition.avatar"
+                                        class="image"
+                                        oncontextmenu="return false;"
+                                    />
+                                </el-col>
+                                <el-col :span="12">
+                                    <div
+                                        style="padding: 14px; text-align: start"
+                                    >
+                                        <h4>{{ exhibition.title }}</h4>
+                                        <p>
+                                            {{
+                                                new Date(
+                                                    exhibition.start_date
+                                                ).toDateString()
+                                            }}
+                                            -
+                                            {{
+                                                new Date(
+                                                    exhibition.end_date
+                                                ).toDateString()
+                                            }}
+                                        </p>
+                                        <p>
+                                            Entry Fee BDT
+                                            <b>{{ exhibition.entry_fee }}</b>
+                                        </p>
+                                    </div>
+                                </el-col>
+                            </el-row>
+                        </el-card>
+                    </template>
                 </el-col>
             </el-row>
         </template>
@@ -119,6 +121,7 @@
             v-if="organization"
             :dialog="exhibitionCreate"
             :organization="organization.id"
+            @create="addNewExhibition"
             @close="exhibitionCreate = false"
         ></exhibition-create-dialog>
         <add-member-dialog
@@ -137,6 +140,7 @@ import {
     getOrganizationMembers,
 } from "@/api/organization.api";
 import { getProfileById } from "@/api/user.api";
+import { getOrganizationExhibitions } from "@/api/exhibition.api";
 import AddMemberDialog from "@/components/dialog/AddMemberDialog";
 import ExhibitionCreateDialog from "@/components/dialog/ExhibitionCreateDialog";
 
@@ -152,6 +156,8 @@ export default {
             organization: null,
             members: [],
             membersLoading: false,
+            exhibitions: [],
+            exhibitionsLoading: false,
             exhibitionCreate: false,
             memberAdd: false,
         };
@@ -159,6 +165,9 @@ export default {
     methods: {
         addNewMember(member) {
             this.members.push(member);
+        },
+        addNewExhibition(exhibition) {
+            this.exhibitions.push(exhibition);
         },
         processRole(role) {
             if (role === "A") {
@@ -200,6 +209,7 @@ export default {
     },
     created() {
         this.loading = true;
+        this.exhibitionsLoading = true;
 
         getOrganizationDetails(this.id)
             .then((res) => {
@@ -212,6 +222,16 @@ export default {
             });
 
         this.fetchMembers();
+
+        getOrganizationExhibitions(this.id)
+            .then((res) => {
+                console.log(res);
+                this.exhibitions.push(...res.data);
+            })
+            .catch((error) => console.log(error))
+            .finally(() => {
+                this.exhibitionsLoading = false;
+            });
     },
 };
 </script>
