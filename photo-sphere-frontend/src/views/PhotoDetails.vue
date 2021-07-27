@@ -54,7 +54,7 @@
                 </el-col>
                 <el-col :span="9">
                     <el-skeleton
-                        v-if="uploaderLoading"
+                        v-if="ownerLoading"
                         :rows="5"
                         animated
                     ></el-skeleton>
@@ -67,18 +67,10 @@
                                 {{ photo.price }}</el-descriptions-item
                             >
                             <el-descriptions-item label="Owner">
-                                {{ uploaderName }}
+                                {{ ownerName }}
                                 <el-button
                                     style="padding: 8px; margin-left: 8px"
-                                    @click="visitUploaderProfile"
-                                    >View Profile</el-button
-                                >
-                            </el-descriptions-item>
-                            <el-descriptions-item label="Uploader">
-                                {{ uploaderName }}
-                                <el-button
-                                    style="padding: 8px; margin-left: 8px"
-                                    @click="visitUploaderProfile"
+                                    @click="visitOwnerProfile"
                                     >View Profile</el-button
                                 >
                             </el-descriptions-item>
@@ -99,6 +91,7 @@
                                 padding: 12px 80px;
                                 margin-top: 24px;
                             "
+                            @click="purchase = true"
                             >PURCHASE</el-button
                         >
                     </template>
@@ -111,6 +104,12 @@
             :photoURL="photo.image"
             @close="share = false"
         ></share-photo>
+        <photo-purchase-dialog
+            v-if="photo"
+            :dialog="purchase"
+            :photo="photo.id"
+            @close="purchase = false"
+        ></photo-purchase-dialog>
     </el-container>
 </template>
 
@@ -119,28 +118,31 @@ import { getPhotoDetails } from "@/api/photo.api";
 import { getProfileById } from "@/api/user.api";
 import { getTag } from "@/api/tag.api";
 import SharePhoto from "@/components/photo/SharePhoto.vue";
+import PhotoPurchaseDialog from "@/components/dialog/PhotoPurchaseDialog";
 
 export default {
     components: {
         SharePhoto,
+        PhotoPurchaseDialog,
     },
     data() {
         return {
             id: this.$route.params.id,
             photo: null,
             loading: false,
-            uploaderLoading: false,
-            uploaderName: null,
+            ownerLoading: false,
+            ownerName: null,
             tagsLoading: false,
             tags: [],
             share: false,
+            purchase: false,
         };
     },
     methods: {
-        visitUploaderProfile() {
+        visitOwnerProfile() {
             this.$router.push({
                 name: "User-Profile",
-                params: { id: this.photo.uploader },
+                params: { id: this.photo.owner },
             });
         },
         async fetchTags() {
@@ -154,15 +156,15 @@ export default {
     },
     created() {
         this.loading = true;
-        this.uploaderLoading = true;
+        this.ownerLoading = true;
 
         getPhotoDetails(this.id)
             .then((res) => {
                 console.log(res);
                 this.photo = res.data;
 
-                getProfileById(this.photo.uploader).then((user) => {
-                    this.uploaderName =
+                getProfileById(this.photo.owner).then((user) => {
+                    this.ownerName =
                         user.data.first_name + " " + user.data.last_name;
                 });
 
@@ -171,7 +173,7 @@ export default {
             .catch((error) => console.log(error))
             .finally(() => {
                 this.loading = false;
-                this.uploaderLoading = false;
+                this.ownerLoading = false;
             });
     },
 };

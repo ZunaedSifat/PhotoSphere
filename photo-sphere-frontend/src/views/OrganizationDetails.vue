@@ -49,8 +49,8 @@
                                 <el-descriptions-item :label="member.name">
                                     {{ processRole(member.role) }}
                                 </el-descriptions-item>
-                            </template></el-descriptions
-                        >
+                            </template>
+                        </el-descriptions>
                     </el-col>
                 </template>
                 <el-col :span="1">
@@ -116,12 +116,16 @@
             </el-row>
         </template>
         <exhibition-create-dialog
+            v-if="organization"
             :dialog="exhibitionCreate"
+            :organization="organization.id"
+            @close="exhibitionCreate = false"
         ></exhibition-create-dialog>
         <add-member-dialog
             v-if="organization"
             :dialog="memberAdd"
             :organization="organization.id"
+            @add="addNewMember"
             @close="memberAdd = false"
         ></add-member-dialog>
     </el-container>
@@ -134,9 +138,13 @@ import {
 } from "@/api/organization.api";
 import { getProfileById } from "@/api/user.api";
 import AddMemberDialog from "@/components/dialog/AddMemberDialog";
+import ExhibitionCreateDialog from "@/components/dialog/ExhibitionCreateDialog";
 
 export default {
-    components: { AddMemberDialog },
+    components: {
+        AddMemberDialog,
+        ExhibitionCreateDialog,
+    },
     data() {
         return {
             id: this.$route.params.id,
@@ -149,6 +157,9 @@ export default {
         };
     },
     methods: {
+        addNewMember(member) {
+            this.members.push(member);
+        },
         processRole(role) {
             if (role === "A") {
                 return "Admin";

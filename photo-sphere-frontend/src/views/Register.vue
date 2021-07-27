@@ -54,6 +54,7 @@
                         <el-button
                             type="primary"
                             style="padding: 8px 80px; margin-top: 16px"
+                            :loading="loading"
                             @click="onSubmit"
                             >REGISTER
                         </el-button>
@@ -197,6 +198,19 @@ export default {
                 this.changeRoute();
             }
         },
+        async emailLogin() {
+            const params = {
+                grant_type: "password",
+                client_id: process.env.VUE_APP_CLIENT_ID,
+                client_secret: process.env.VUE_APP_CLIENT_SECRET,
+                username: this.form.email,
+                password: this.form.password,
+            };
+
+            await this.$store.dispatch("auth/loginWithCredentials", params);
+            await this.$store.dispatch("user/fetchCurrentUserProfile");
+            this.changeRoute();
+        },
         async onSubmit() {
             if (this.$refs.form.validate()) {
                 this.loading = true;
@@ -211,10 +225,11 @@ export default {
 
                 try {
                     await createProfile(formData);
-                    await this.$store.dispatch("user/fetchCurrentUserProfile");
+                    await this.emailLogin();
                 } catch (error) {
-                    this.loading = false;
                     console.log(error.response);
+                } finally {
+                    this.loading = false;
                 }
             }
         },
