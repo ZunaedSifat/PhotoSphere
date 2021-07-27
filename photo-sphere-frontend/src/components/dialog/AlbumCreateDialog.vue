@@ -42,7 +42,11 @@
                         :body-style="{ padding: '0px', width: '100px' }"
                     >
                         <div style="position: relative">
-                            <img :src="photo.image" class="image" />
+                            <img
+                                :src="photo.image"
+                                class="image"
+                                oncontextmenu="return false;"
+                            />
                             <el-button
                                 v-if="form.photoStatus[index]"
                                 circle
@@ -122,6 +126,7 @@ export default {
             this.form.photoStatus[index] = false;
         },
         async onCreate() {
+            this.loading = true;
             try {
                 var selectedPhotos = [];
                 for (let i = 0; i < this.photos.length; i++) {
@@ -140,9 +145,11 @@ export default {
                 const response = await createAlbum(data);
                 console.log(response);
                 this.$emit("create", response.data);
-                this.$emit("close");
             } catch (error) {
                 console.log(error.response);
+            } finally {
+                this.loading = false;
+                this.$emit("close");
             }
         },
     },

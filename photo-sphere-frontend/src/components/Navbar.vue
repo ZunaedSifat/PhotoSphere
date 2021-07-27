@@ -2,7 +2,11 @@
     <el-row type="flex" align="middle" class="nav-container">
         <el-col :span="6" style="padding: 8px">
             <router-link to="/" exact>
-                <img src="../../icons/logo-final.svg" alt="" />
+                <img
+                    src="../../icons/logo-final.svg"
+                    alt=""
+                    oncontextmenu="return false;"
+                />
             </router-link>
         </el-col>
         <el-col :span="6"></el-col>
@@ -15,7 +19,7 @@
                     background-color="inherit"
                     text-color="#fff"
                 >
-                    <el-menu-item index="1" route="/organization/1">
+                    <el-menu-item index="1" route="/organizations">
                         <span>Organizations</span>
                         <el-divider direction="vertical"></el-divider>
                     </el-menu-item>

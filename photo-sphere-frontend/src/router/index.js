@@ -3,10 +3,14 @@ import Home from '@/views/Home.vue'
 import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
 import UserProfile from '@/views/UserProfile.vue'
-import Organization from '@/views/Organization.vue'
+import Organizations from '@/views/Organizations.vue'
+import OrganizationDetails from '@/views/OrganizationDetails.vue'
+import Exhibitions from '@/views/Exhibitions.vue'
+import ExhibitionDetails from '@/views/ExhibitionDetails.vue'
 import PhotoDetails from '@/views/PhotoDetails.vue'
 import AlbumDetails from '@/views/AlbumDetails.vue'
 import MarketPlace from '@/views/MarketPlace.vue'
+
 
 const routes = [{
         path: '/',
@@ -29,9 +33,14 @@ const routes = [{
         component: UserProfile
     },
     {
+        path: '/organizations',
+        name: 'Organizations',
+        component: Organizations
+    },
+    {
         path: '/organization/:id',
-        name: 'Organization',
-        component: Organization
+        name: 'Organization-Details',
+        component: OrganizationDetails
     },
     {
         path: '/photo/:id',
@@ -46,7 +55,12 @@ const routes = [{
     {
         path: '/exhibitions',
         name: 'Exhibitions',
-        component: Home
+        component: Exhibitions
+    },
+    {
+        path: '/exhibition/:id',
+        name: 'Exhibition-Details',
+        component: ExhibitionDetails
     },
     {
         path: '/marketplace',

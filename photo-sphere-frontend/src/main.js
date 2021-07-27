@@ -3,6 +3,10 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import GAuth from 'vue3-google-oauth2'
+import FacebookButton from "vue-share-buttons/src/components/FacebookButton";
+import TwitterButton from "vue-share-buttons/src/components/TwitterButton";
+import TumblrButton from "vue-share-buttons/src/components/TumblrButton";
+import PinterestButton from "vue-share-buttons/src/components/PinterestButton";
 
 import installElementPlus from './plugins/element'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -25,4 +29,8 @@ app
     .use(store)
     .use(GAuth, gAuthOptions)
     .component("font-awesome-icon", FontAwesomeIcon)
+    .component("facebook-button", FacebookButton)
+    .component("twitter-button", TwitterButton)
+    .component("tumblr-button", TumblrButton)
+    .component("pinterest-button", PinterestButton)
     .mount('#app')

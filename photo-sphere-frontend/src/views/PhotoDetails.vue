@@ -7,7 +7,11 @@
             <el-row type="flex">
                 <el-col :offset="1" :span="12">
                     <el-card :body-style="{ padding: '0px' }">
-                        <img :src="photo.image" class="image" />
+                        <img
+                            :src="photo.image"
+                            class="image"
+                            oncontextmenu="return false;"
+                        />
 
                         <div style="padding: 14px; text-align: left">
                             <div class="bottom">
@@ -29,7 +33,11 @@
                                         }}</span>
                                     </div>
                                     <div style="display: inline-block">
-                                        <el-button class="icon-button" circle>
+                                        <el-button
+                                            class="icon-button"
+                                            circle
+                                            @click="share = true"
+                                        >
                                             <font-awesome-icon
                                                 :icon="['fas', 'share-alt']"
                                             ></font-awesome-icon>
@@ -82,7 +90,6 @@
                                     size="small"
                                     >{{ tag }}</el-tag
                                 >
-                                <el-tag size="small">teal</el-tag>
                             </el-descriptions-item>
                         </el-descriptions>
                         <el-button
@@ -98,6 +105,12 @@
                 </el-col>
             </el-row>
         </template>
+        <share-photo
+            v-if="photo"
+            :dialog="share"
+            :photoURL="photo.image"
+            @close="share = false"
+        ></share-photo>
     </el-container>
 </template>
 
@@ -105,8 +118,12 @@
 import { getPhotoDetails } from "@/api/photo.api";
 import { getProfileById } from "@/api/user.api";
 import { getTag } from "@/api/tag.api";
+import SharePhoto from "@/components/photo/SharePhoto.vue";
 
 export default {
+    components: {
+        SharePhoto,
+    },
     data() {
         return {
             id: this.$route.params.id,
@@ -116,6 +133,7 @@ export default {
             uploaderName: null,
             tagsLoading: false,
             tags: [],
+            share: false,
         };
     },
     methods: {
@@ -125,11 +143,19 @@ export default {
                 params: { id: this.photo.uploader },
             });
         },
+        async fetchTags() {
+            this.tagsLoading = true;
+            for (let i = 0; i < this.photo.tags.length; i++) {
+                const tagResponse = await getTag(this.photo.tags[i]);
+                this.tags.push(tagResponse.data.name);
+            }
+            this.tagsLoading = false;
+        },
     },
     created() {
         this.loading = true;
         this.uploaderLoading = true;
-        this.tagsLoading = true;
+
         getPhotoDetails(this.id)
             .then((res) => {
                 console.log(res);
@@ -140,17 +166,12 @@ export default {
                         user.data.first_name + " " + user.data.last_name;
                 });
 
-                res.data.tags.forEach(function (tagId, index, array) {
-                    getTag(tagId).then((tagRes) => {
-                        this.tags.push(tagRes.data.name);
-                    });
-                });
+                this.fetchTags();
             })
             .catch((error) => console.log(error))
             .finally(() => {
                 this.loading = false;
                 this.uploaderLoading = false;
-                this.tagsLoading = false;
             });
     },
 };

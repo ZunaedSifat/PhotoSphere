@@ -2,7 +2,11 @@
     <el-container>
         <el-row type="flex" style="margin-top: 8px">
             <el-col :span="12">
-                <img class="bg__image" src="../../images/login_bg.jpg" />
+                <img
+                    class="bg__image"
+                    src="../../images/login_bg.jpg"
+                    oncontextmenu="return false;"
+                />
             </el-col>
             <el-col :offset="3" :span="6">
                 <el-form

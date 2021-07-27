@@ -3,7 +3,6 @@
         <el-row type="flex">
             <el-col :offset="1" :span="8">
                 <el-menu
-                    class="el-menu-vertical-demo"
                     @open="handleOpen"
                     @close="handleClose"
                     style="text-align: start"
@@ -102,7 +101,11 @@
                             :body-style="{ padding: '0px', width: '300px' }"
                         >
                             <div style="position: relative">
-                                <img :src="photo.image" class="image" />
+                                <img
+                                    :src="photo.image"
+                                    class="image"
+                                    oncontextmenu="return false;"
+                                />
                             </div>
 
                             <div class="bottom">
@@ -228,10 +231,6 @@ export default {
 
 
 <style lang="scss" scoped>
-.el-divider--vertical {
-    height: 100% !important;
-}
-
 span {
     margin-right: 8px;
 }

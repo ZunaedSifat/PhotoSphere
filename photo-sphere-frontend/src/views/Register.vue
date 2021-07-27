@@ -2,7 +2,11 @@
     <el-container>
         <el-row type="flex" style="margin-top: 8px">
             <el-col :span="12">
-                <img class="bg__image" src="../../images/register_bg.jpg" />
+                <img
+                    class="bg__image"
+                    src="../../images/register_bg.jpg"
+                    oncontextmenu="return false;"
+                />
             </el-col>
             <el-col :offset="3" :span="6">
                 <el-form
@@ -60,11 +64,10 @@
                             <el-divider>OR</el-divider>
                         </el-row>
                         <el-row type="flex" justify="center">
-                            <el-button type="primary" circle>
-                                <font-awesome-icon
-                                    :icon="['fab', 'google']"
-                                ></font-awesome-icon>
-                            </el-button>
+                            <google-login
+                                @socialClick="socialLogin"
+                            ></google-login>
+
                             <el-button type="primary" circle>
                                 <font-awesome-icon
                                     :icon="['fab', 'facebook']"
@@ -79,10 +82,16 @@
 </template>
 
 <script>
+import GoogleLogin from "@/components/auth/GoogleLogin";
 var emailValidator = require("email-validator");
 import { createProfile } from "@/api/user.api";
+import authMixin from "@/mixins/authMixin";
 
 export default {
+    mixins: [authMixin],
+    components: {
+        GoogleLogin,
+    },
     data() {
         var validateEmail = (rule, value, callback) => {
             if (value === "") {
@@ -160,6 +169,33 @@ export default {
     methods: {
         handleFileUpload() {
             this.form.avatar = this.$refs.file.files[0];
+        },
+        changeRoute() {
+            if (this.$route.params.nextUrl != null) {
+                this.$router.replace(this.$route.params.nextUrl);
+            } else {
+                this.$router.replace({
+                    name: "User-Profile",
+                    params: { id: this.id },
+                });
+            }
+        },
+        async socialLogin(settings) {
+            const params = {
+                grant_type: "convert_token",
+                client_id: process.env.VUE_APP_CLIENT_ID,
+                client_secret: process.env.VUE_APP_CLIENT_SECRET,
+                backend: settings.backend,
+                token: settings.token,
+            };
+            try {
+                await this.$store.dispatch("auth/exchangeSocialToken", params);
+                await this.$store.dispatch("user/fetchCurrentUserProfile");
+            } catch (error) {
+                console.log(error);
+            } finally {
+                this.changeRoute();
+            }
         },
         async onSubmit() {
             if (this.$refs.form.validate()) {

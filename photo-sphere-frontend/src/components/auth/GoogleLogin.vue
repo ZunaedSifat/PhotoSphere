@@ -31,7 +31,7 @@ export default {
             }
         },
         onSuccess(user) {
-            const accessToken = user.qc.access_token;
+            const accessToken = user.Zb.access_token;
             const settings = {
                 backend: "google-oauth2",
                 token: accessToken,

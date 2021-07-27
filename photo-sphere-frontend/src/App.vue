@@ -1,15 +1,18 @@
 <template>
-    <el-container>
+    <template v-if="loading">
+        <div v-loading="loading"></div>
+    </template>
+    <el-container v-else>
         <el-header style="padding: 0px">
             <navbar></navbar>
         </el-header>
         <el-main>
             <router-view></router-view>
         </el-main>
-        <!-- <el-footer v-if="showFooter">
+    </el-container>
+    <!-- <el-footer v-if="showFooter">
             <custom-footer></custom-footer>
         </el-footer> -->
-    </el-container>
 </template>
 
 <script>
@@ -40,8 +43,8 @@ export default {
             try {
                 await this.$store.dispatch("auth/autoLogin");
                 await this.$store.dispatch("user/fetchCurrentUserProfile");
-            } catch {
-                this.loading = false;
+            } catch (error) {
+                console.log(error.response);
             } finally {
                 this.loading = false;
             }
@@ -73,6 +76,10 @@ export default {
 body {
     margin: 0 !important;
 }
+/* 
+.el-main {
+    margin-top: 8px;
+} */
 
 .el-footer {
     position: fixed;
