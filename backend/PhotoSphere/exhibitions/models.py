@@ -9,7 +9,6 @@ class Exhibition(models.Model):
     description = models.TextField()
     avatar = models.ImageField(upload_to='exhibition/', null=True, blank=True)
     entry_fee = models.DecimalField(max_digits=6, decimal_places=2)
-    # privacy = models.TextField(max_length=1, ) todo: add
 
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()

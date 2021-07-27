@@ -10,7 +10,6 @@ class PhotoSerializer(serializers.ModelSerializer):
             'uploader',
             'title',
             'caption',
-            'privacy',
             'tags',
             'image',
             'for_sale',

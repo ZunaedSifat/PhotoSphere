@@ -58,11 +58,7 @@ class PhotoListCreateAPIView(generics.ListCreateAPIView):
             pass
 
         try:
-            print('came here')
-            print(self.request.user, self.request.user.profile.following_list.all())
-
             following = int(query_params['following'])
-            print(following, self.request.user, self.request.user.profile.following_list.all())
             query = Q(uploader__user__in=self.request.user.profile.following_list.all())
             queryset = queryset.filter(query if following else ~query)
         except:
@@ -86,7 +82,7 @@ class PhotoDetailsAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PhotoLikeView(views.APIView):
-    permission_classes = (IsAuthenticated, )  # todo: privacy permission
+    permission_classes = (IsAuthenticated, )
 
     def get_photo(self, pk):
         try:
