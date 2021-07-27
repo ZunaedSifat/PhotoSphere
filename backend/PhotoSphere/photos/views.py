@@ -21,6 +21,13 @@ class PhotoListCreateAPIView(generics.ListCreateAPIView):
         query_params = self.request.query_params
 
         try:
+            tag_search = query_params['tag_search']
+            queryset = queryset.filter(tags__name__icontains=tag_search) | \
+                       queryset.filter(tags__description__icontains=tag_search)
+        except:
+            pass
+
+        try:
             user = int(query_params['user'])
             queryset = queryset.filter(uploader__user=user)
         except:
