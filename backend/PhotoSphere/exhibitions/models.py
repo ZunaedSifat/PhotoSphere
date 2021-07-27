@@ -40,3 +40,19 @@ class ExhibitionEntry(models.Model):
 def add_optimized_version(sender, instance, created, **kwargs):
     instance.photo.exhibition_entry_count = instance.photo.exhibition_entries.count()
     instance.photo.save()
+
+
+class Theme(models.Model):
+    GRID = 'G'
+    CAROUSEL = 'C'
+    LAYOUT_CHOICES = (
+        (GRID, 'Grid'),
+        (CAROUSEL, 'Carousel')
+    )
+
+    background_color = models.CharField(max_length=7)
+    frame_radius = models.FloatField()
+    frame_color = models.CharField(max_length=7)
+    frame_padding = models.IntegerField()
+    column = models.IntegerField()
+    layout = models.CharField(max_length=1, choices=LAYOUT_CHOICES)
