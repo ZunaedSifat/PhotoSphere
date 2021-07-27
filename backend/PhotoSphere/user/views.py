@@ -15,6 +15,17 @@ class ProfileListAPIView(generics.ListCreateAPIView):
             return ProfileSerializer
         return ProfileCreationSerializer
 
+    def filter_queryset(self, queryset):
+        try:
+            search = self.request.query_params['search']
+            queryset = queryset.filter(user__first_name__icontains=search) |\
+                       queryset.filter(user__last_name__icontains=search) | \
+                       queryset.filter(user__username__icontains=search)
+        except:
+            pass
+
+        return queryset
+
 
 class ProfileRetrieveView(generics.RetrieveAPIView):
     permission_classes = (IsAuthenticated, )

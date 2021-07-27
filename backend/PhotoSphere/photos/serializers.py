@@ -10,16 +10,25 @@ class PhotoSerializer(serializers.ModelSerializer):
             'uploader',
             'title',
             'caption',
-            'privacy',
             'tags',
             'image',
+            'optimized_image_128',
+            'optimized_image_256',
+            'optimized_image_512',
+            'optimized_image_1024',
             'for_sale',
             'is_digital',
             'price',
             'created_at',
             'like_count'
         )
-        read_only_fields = ['id']
+        read_only_fields = [
+            'id',
+            'optimized_image_128',
+            'optimized_image_256',
+            'optimized_image_512',
+            'optimized_image_1024'
+        ]
 
 
 class TagSerializer(serializers.ModelSerializer):

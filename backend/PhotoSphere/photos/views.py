@@ -2,7 +2,7 @@ import datetime
 
 from django.db.models import Q
 from rest_framework import generics, views, status, response, exceptions
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from photos.serializers import PhotoSerializer, TagSerializer
 from photos.models import Photo, Tag
@@ -19,6 +19,13 @@ class PhotoListCreateAPIView(generics.ListCreateAPIView):
 
     def filter_queryset(self, queryset):
         query_params = self.request.query_params
+
+        try:
+            tag_search = query_params['tag_search']
+            queryset = queryset.filter(tags__name__icontains=tag_search) | \
+                       queryset.filter(tags__description__icontains=tag_search)
+        except:
+            pass
 
         try:
             user = int(query_params['user'])
@@ -58,11 +65,7 @@ class PhotoListCreateAPIView(generics.ListCreateAPIView):
             pass
 
         try:
-            print('came here')
-            print(self.request.user, self.request.user.profile.following_list.all())
-
             following = int(query_params['following'])
-            print(following, self.request.user, self.request.user.profile.following_list.all())
             query = Q(uploader__user__in=self.request.user.profile.following_list.all())
             queryset = queryset.filter(query if following else ~query)
         except:
@@ -86,7 +89,7 @@ class PhotoDetailsAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PhotoLikeView(views.APIView):
-    permission_classes = (IsAuthenticated, )  # todo: privacy permission
+    permission_classes = (IsAuthenticated, )
 
     def get_photo(self, pk):
         try:
@@ -123,3 +126,8 @@ class TagListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
 
+
+class TagRetrieveAPIView(generics.RetrieveAPIView):
+    permission_classes = (AllowAny, )
+    serializer_class = TagSerializer
+    queryset = Tag.objects.all()

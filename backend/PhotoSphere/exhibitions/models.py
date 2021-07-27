@@ -9,7 +9,6 @@ class Exhibition(models.Model):
     description = models.TextField()
     avatar = models.ImageField(upload_to='exhibition/', null=True, blank=True)
     entry_fee = models.DecimalField(max_digits=6, decimal_places=2)
-    # privacy = models.TextField(max_length=1, ) todo: add
 
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
@@ -23,8 +22,6 @@ class Exhibition(models.Model):
 class ExhibitionEntry(models.Model):
     exhibition = models.ForeignKey(to=Exhibition, on_delete=models.CASCADE, related_name='entries')
     photo = models.ForeignKey(to=Photo, on_delete=models.PROTECT, related_name='exhibition_entries')
-    for_sale = models.BooleanField()
-    price = models.DecimalField(max_digits=6, decimal_places=2)
     order = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True)
