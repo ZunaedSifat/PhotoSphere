@@ -73,6 +73,7 @@ class PhotoListCreateAPIView(generics.ListCreateAPIView):
 
         try:
             queryset = queryset.order_by(query_params['order_by'])
+            print('ordered properly')
         except:
             pass
 

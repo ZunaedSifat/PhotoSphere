@@ -24,7 +24,8 @@ class PhotoSerializer(serializers.ModelSerializer):
             'is_digital',
             'price',
             'created_at',
-            'like_count'
+            'like_count',
+            'exhibition_entry_count'
         )
         read_only_fields = [
             'id',
@@ -36,6 +37,7 @@ class PhotoSerializer(serializers.ModelSerializer):
             'watermarked_optimized_image_256',
             'watermarked_optimized_image_512',
             'watermarked_optimized_image_1024',
+            'exhibition_entry_count',
         ]
 
 

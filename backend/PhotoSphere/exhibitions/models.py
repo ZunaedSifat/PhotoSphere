@@ -1,4 +1,7 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 from organizations.models import Organization
 from photos.models import Photo
 
@@ -31,3 +34,9 @@ class ExhibitionEntry(models.Model):
 
     class Meta:
         ordering = ('order', )
+
+
+@receiver(post_save, sender=ExhibitionEntry)
+def add_optimized_version(sender, instance, created, **kwargs):
+    instance.photo.exhibition_entry_count = instance.photo.exhibition_entries.count()
+    instance.photo.save()

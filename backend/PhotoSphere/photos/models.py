@@ -58,6 +58,7 @@ class Photo(models.Model):
     likes = models.ManyToManyField(to=User, related_name='liked_photos', blank=True)
     like_count = models.IntegerField(default=0)
     tags = models.ManyToManyField(to=Tag, related_name='tagged_photos', blank=True)
+    exhibition_entry_count = models.IntegerField(default=0, blank=True)
 
     def __str__(self):
         return self.title
