@@ -188,7 +188,7 @@ export default {
                     ? "like_count"
                     : "-like_count";
             } else if (this.price != null) {
-                params["price"] = this.price ? "price" : "-price";
+                params["order_by"] = this.price ? "price" : "-price";
             }
             this.loading = true;
 

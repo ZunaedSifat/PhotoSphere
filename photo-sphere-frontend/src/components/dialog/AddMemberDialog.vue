@@ -10,12 +10,7 @@
         <el-form ref="form" :model="form" size="small" status-icon>
             <el-form-item label="Member" prop="member">
                 <el-autocomplete
-                    style="
-                        width: 90px !important;
-                        margin-left: 10px !important;
-                        vertical-align: bottom;
-                    "
-                    v-model="form.member"
+                    v-model="form.memberName"
                     ref="saveTagInput"
                     :fetch-suggestions="searchUser"
                     @select="handleSelect"
@@ -46,6 +41,7 @@
 
 <script>
 import { searchProfile } from "@/api/user.api";
+import { createOrganizationMember } from "@/api/organization.api";
 
 export default {
     name: "Add member",
@@ -64,6 +60,7 @@ export default {
             loading: false,
             form: {
                 member: "",
+                memberName: "",
                 role: "",
             },
         };
@@ -77,28 +74,31 @@ export default {
             var results = await searchProfile(queryString);
 
             // call callback function to return suggestions
-            var res = results.map((result) => {
-                return { value: result.name, id: result.id };
+            var res = results.data.map((result) => {
+                var fullname = result.first_name + " " + result.last_name;
+                return { value: fullname, id: result.id };
             });
             console.log(res);
             cb(res);
         },
         handleSelect(user) {
-            console.log(user.id);
-            console.log(this.form.member);
+            this.form.member = user.id;
         },
         async onCreate() {
             this.loading = true;
             try {
-                var formData = new FormData();
-                formData.append("name", this.form.name);
-                formData.append("description", this.form.description);
-                formData.append("website", this.form.website);
-                formData.append("avatar", this.form.avatar);
+                const data = {
+                    organization: this.organization,
+                    member: this.form.member,
+                    role: this.form.role,
+                };
 
-                const response = await createOrganization(formData);
+                const response = await createOrganizationMember(data);
                 console.log(response);
-                this.$emit("create", response.data);
+                this.$emit("add", {
+                    name: this.form.memberName,
+                    role: this.form.role,
+                });
             } catch (error) {
                 console.log(error.response);
             } finally {

@@ -13,9 +13,12 @@ def get_valid_till():
 
 
 class Order(models.Model):
-    transaction_id = models.UUIDField(max_length=36, default=uuid4, editable=False, unique=True)
-    photo = models.ForeignKey(to=Photo, on_delete=models.PROTECT, related_name='order')
-    user = models.ForeignKey(to=get_user_model(), on_delete=models.PROTECT, blank=True)
+    transaction_id = models.UUIDField(
+        max_length=36, default=uuid4, editable=False, unique=True)
+    photo = models.ForeignKey(
+        to=Photo, on_delete=models.PROTECT, related_name='order')
+    user = models.ForeignKey(
+        to=get_user_model(), on_delete=models.PROTECT, blank=True)
 
     phone = models.CharField(max_length=16)
     address = models.CharField(max_length=255)
@@ -31,6 +34,7 @@ class Order(models.Model):
         return f'Order for {self.photo.title} by {self.user.get_full_name()}'
 
     def get_transaction(self):
+        print('hello world')
         return sslcommerze.SSLPaymentSessionGenerator(
             transaction_id=self.transaction_id,
             total_amount=self.photo.price,
@@ -48,9 +52,12 @@ class Order(models.Model):
 
 
 def add_redirection_url(sender, instance, created, **kwargs):
+    print('before create')
     if created:
+        print('after create')
         instance.redirection_url = instance.get_transaction().get('GatewayPageURL')
         instance.save()
+        print('after save')
 
 
 post_save.connect(add_redirection_url, sender=Order)

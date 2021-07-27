@@ -14,6 +14,24 @@
             size="small"
             status-icon
         >
+            <el-form-item label="Cover Photo" prop="avatar">
+                <input
+                    type="file"
+                    id="file"
+                    ref="file"
+                    class="input is-rounded"
+                    @change="handleFileUpload"
+                />
+                <div>
+                    <img
+                        class="image-preview"
+                        v-if="url"
+                        :src="url"
+                        oncontextmenu="return false;"
+                    />
+                </div>
+            </el-form-item>
+
             <el-form-item label="Title" prop="title">
                 <el-input v-model="form.title"></el-input>
             </el-form-item>
@@ -40,9 +58,6 @@
             <el-form-item label="Entry Fee" prop="entryFee">
                 <el-input-number v-model="form.entryFee"></el-input-number>
             </el-form-item>
-            <el-form-item label="Submission Fee" prop="submissionFee">
-                <el-input-number v-model="form.submissionFee"></el-input-number>
-            </el-form-item>
             <el-form-item label="Privacy" prop="privacy">
                 <el-radio-group v-model="form.privacy">
                     <el-radio label="P">Public</el-radio>
@@ -65,7 +80,7 @@
 </template>
 
 <script>
-import { createAlbum } from "@/api/album.api";
+import { createExhibition } from "@/api/exhibition.api";
 
 export default {
     name: "Exhibition Create",
@@ -74,24 +89,25 @@ export default {
             type: Boolean,
             default: false,
         },
+        organization: {
+            type: Number,
+            required: true,
+        },
     },
     data() {
         return {
             loading: false,
-            fileList: [],
-            file: null,
+            url: null,
             form: {
+                avatar: null,
                 title: "",
                 description: "",
-                date: null,
                 startDate: null,
                 endDate: null,
                 entryFee: 0,
-                submissionFee: 0,
                 privacy: null,
                 theme: null,
             },
-            rules: {},
         };
     },
     methods: {
@@ -99,25 +115,33 @@ export default {
             this.$emit("close");
             done();
         },
-
+        handleFileUpload() {
+            this.form.avatar = this.$refs.file.files[0];
+            this.url = URL.createObjectURL(this.form.avatar);
+        },
         async onCreate() {
+            this.loading = true;
             try {
-                var data = {
-                    title: this.form.title,
-                    description: this.form.description,
-                    privacy: this.form.privacy,
-                };
+                var formData = new FormData();
+                formData.append("organizer", this.organization);
+                formData.append("title", this.form.title);
+                formData.append("description", this.form.description);
+                formData.append("entry_fee", this.form.entryFee);
+                formData.append(
+                    "start_date",
+                    new DateTime(this.form.startDate)
+                );
+                formData.append("end_date", new DateTime(this.form.endDate));
+                if (this.form.avatar) {
+                    formData.append("avatar", this.form.avatar);
+                }
 
-                console.log(this.form.date[0]);
-                console.log(this.form.date[1]);
-
-                // const response = await createAlbum(data);
-                // console.log(response);
-                // this.$emit("close");
+                const response = await createExhibition(formData);
+                console.log(response);
             } catch (error) {
                 console.log(error.response);
             } finally {
-                console.log("done");
+                this.loading = false;
                 this.$emit("close");
             }
         },
@@ -128,5 +152,14 @@ export default {
 <style lang="scss" scoped>
 .el-form-item {
     text-align: start;
+}
+
+.image-preview {
+    border: 1px solid grey;
+    border-radius: 8px;
+    padding: 8px;
+    margin-top: 4px;
+    width: 100px;
+    height: 100px;
 }
 </style>
