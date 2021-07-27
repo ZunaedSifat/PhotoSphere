@@ -1,9 +1,15 @@
 import string
+import os
+from PIL import Image
+import urllib
 
+from django.core.files import File
 from django.db import models
 from django.db.models.signals import pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 from user.models import Profile
 
@@ -34,6 +40,12 @@ class Photo(models.Model):
     title = models.CharField(max_length=100)
     caption = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='photos/')
+
+    optimized_image_128 = models.ImageField(upload_to='optimized/', null=True, blank=True)
+    optimized_image_256 = models.ImageField(upload_to='optimized/', null=True, blank=True)
+    optimized_image_512 = models.ImageField(upload_to='optimized/', null=True, blank=True)
+    optimized_image_1024 = models.ImageField(upload_to='optimized/', null=True, blank=True)
+
     for_sale = models.BooleanField()
     is_digital = models.BooleanField()
     price = models.DecimalField(max_digits=8, decimal_places=2)
@@ -56,3 +68,26 @@ class Photo(models.Model):
         self.likes.remove(user)
         self.like_count = self.likes.all().count()
         self.save()
+
+
+def save_resized_image(instance, image_field, size):
+    file, ext = os.path.splitext(instance.image.path)
+    with Image.open(instance.image.path) as image:
+        image.thumbnail(size)
+        image.save(os.path.join(settings.MEDIA_ROOT, file) + f"_{size}{ext}", ext[1:])
+        image_path = "file://" + os.path.join(settings.MEDIA_ROOT, f'{file}_{size}{ext}')
+        result = urllib.request.urlretrieve(image_path)
+        image_field.save(
+            os.path.basename(image_path),
+            File(open(result[0], 'rb'))
+        )
+        instance.save()
+
+
+@receiver(post_save, sender=Photo)
+def add_optimized_version(sender, instance, created, **kwargs):
+    if created:
+        save_resized_image(instance=instance, image_field=instance.optimized_image_128, size=(128, 128))
+        save_resized_image(instance=instance, image_field=instance.optimized_image_256, size=(256, 256))
+        save_resized_image(instance=instance, image_field=instance.optimized_image_512, size=(512, 512))
+        save_resized_image(instance=instance, image_field=instance.optimized_image_1024, size=(1024, 1024))
