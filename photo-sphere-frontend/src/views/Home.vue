@@ -8,18 +8,21 @@
                         <img
                             class="carousel__image"
                             src="../../images/feature_1.jpg"
+                            oncontextmenu="return false;"
                         />
                     </el-carousel-item>
                     <el-carousel-item key="2">
                         <img
                             class="carousel__image"
                             src="../../images/feature_2.jpg"
+                            oncontextmenu="return false;"
                         />
                     </el-carousel-item>
                     <el-carousel-item key="3">
                         <img
                             class="carousel__image"
                             src="../../images/feature_3.jpg"
+                            oncontextmenu="return false;"
                         />
                     </el-carousel-item>
                     <!-- <el-carousel-item v-for="item in 6" :key="item">

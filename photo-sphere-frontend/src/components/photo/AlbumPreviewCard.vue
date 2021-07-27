@@ -6,7 +6,7 @@
         :body-style="{ padding: '0px', width: '200px' }"
         @click="viewDetails"
     >
-        <img :src="photoPath" class="image" />
+        <img :src="photoPath" class="image" oncontextmenu="return false;" />
         <div style="padding: 14px">
             <span>{{ album.name }}</span>
         </div>

@@ -7,31 +7,16 @@
             <el-row type="flex">
                 <el-col :offset="1" :span="12">
                     <el-card :body-style="{ padding: '0px' }">
-                        <img :src="topPhoto" class="image" />
+                        <img
+                            :src="topPhoto"
+                            class="image"
+                            oncontextmenu="return false;"
+                        />
 
                         <div style="padding: 14px; text-align: left">
                             <div class="bottom">
                                 <span>{{ album.name }}</span>
                                 <div>
-                                    <!-- <div
-                                        style="
-                                            display: inline-block;
-                                            margin-right: 8px;
-                                        "
-                                    >
-                                        <el-button
-                                            class="icon-button"
-                                            
-                                            circle
-                                        >
-                                            <font-awesome-icon
-                                                :icon="['far', 'heart']"
-                                            ></font-awesome-icon>
-                                        </el-button>
-                                        <span class="caption">{{
-                                            photo.like_count
-                                        }}</span>
-                                    </div> -->
                                     <div style="display: inline-block">
                                         <el-button class="icon-button" circle>
                                             <font-awesome-icon
@@ -46,19 +31,6 @@
                             >
                         </div>
                     </el-card>
-                    <template v-if="photosLoading">
-                        <div v-loading="photosLoading"></div>
-                    </template>
-                    <template v-else>
-                        <h4>All Photos</h4>
-                        <el-space alignment="start" size="medium" wrap>
-                            <photo-preview-card
-                                v-for="(photo, index) in photos"
-                                :key="index"
-                                :photo="photo"
-                            ></photo-preview-card>
-                        </el-space>
-                    </template>
                 </el-col>
                 <el-col :span="1">
                     <el-divider direction="vertical"></el-divider>
@@ -80,6 +52,20 @@
                                 >
                             </el-descriptions-item>
                         </el-descriptions>
+                    </template>
+
+                    <template v-if="photosLoading">
+                        <div v-loading="photosLoading"></div>
+                    </template>
+                    <template v-else>
+                        <h4 style="text-align: left">All Photos</h4>
+                        <el-space alignment="start" size="large" wrap>
+                            <photo-preview-card
+                                v-for="(photo, index) in photos"
+                                :key="index"
+                                :photo="photo"
+                            ></photo-preview-card>
+                        </el-space>
                     </template>
                 </el-col>
             </el-row>
@@ -116,6 +102,19 @@ export default {
                 params: { id: this.album.owner },
             });
         },
+        async fetchPhotos() {
+            this.photosLoading = true;
+
+            for (let i = 0; i < this.album.photos.length; i++) {
+                const photoResponse = await getPhotoDetails(
+                    this.album.photos[i]
+                );
+                this.photos.push(photoResponse.data);
+            }
+
+            this.topPhoto = this.photos[0].image;
+            this.photosLoading = false;
+        },
     },
     created() {
         this.loading = true;
@@ -124,39 +123,18 @@ export default {
             .then((res) => {
                 console.log(res);
                 this.album = res.data;
-                this.photosLoading = true;
 
                 getProfileById(this.album.owner).then((user) => {
                     this.ownerName =
                         user.data.first_name + " " + user.data.last_name;
                 });
 
-                getPhotoDetails(this.album.photos[0]).then((res) => {
-                    this.topPhoto = res.data.image;
-                    this.photos.push(res.data);
-                    getPhotoDetails(this.album.photos[1]).then((res) => {
-                        this.photos.push(res.data);
-                        this.photosLoading = false;
-                    });
-                });
-
-                // console.log("left " + this.photosLoading);
-                // for (let i = 0; i < this.album.photos.length; i++) {
-                //     getPhotoDetails(this.album.photos[i]).then(
-                //         (photoDetails) => {
-                //             this.photos.push(photoDetails);
-                //             console.log(photoDetails);
-                //             this.photosLoading--;
-                //             console.log("left " + this.photosLoading);
-                //         }
-                //     );
-                // }
+                this.fetchPhotos();
             })
             .catch((error) => console.log(error))
             .finally(() => {
                 this.loading = false;
                 this.ownerLoading = false;
-                // this.photosLoading = false;
             });
     },
 };

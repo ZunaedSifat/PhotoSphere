@@ -15,34 +15,24 @@
             size="small"
             status-icon
         >
-            <input
-                type="file"
-                id="file"
-                ref="file"
-                class="input is-rounded"
-                @change="handleFileUpload"
-            />
-            <img v-if="file" :src="file.url" />
-            <!-- <el-upload
-                drag
-                thumbnail-mode
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :auto-upload="false"
-                :on-success="onFileLoad"
-                :file-list="fileList"
-                list-type="picture"
-                style="margin-bottom: 16px"
-            >
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">
-                    Drop file here or <em>click to upload</em>
+            <el-form-item label="Image" prop="image">
+                <input
+                    type="file"
+                    id="file"
+                    ref="file"
+                    class="input is-rounded"
+                    @change="handleFileUpload"
+                />
+                <div>
+                    <img
+                        class="image-preview"
+                        v-if="url"
+                        :src="url"
+                        oncontextmenu="return false;"
+                    />
                 </div>
-                <template #tip>
-                    <div class="el-upload__tip">
-                        jpg/png files with a size less than 500kb
-                    </div>
-                </template>
-            </el-upload> -->
+            </el-form-item>
+
             <el-form-item label="Title" prop="title">
                 <el-input v-model="form.title"></el-input>
             </el-form-item>
@@ -99,7 +89,6 @@
                     ref="saveTagInput"
                     size="mini"
                     :fetch-suggestions="searchTag"
-                    :trigger-on-focus="false"
                     @select="handleSelect"
                     @keyup.enter="handleInputConfirm"
                 >
@@ -145,6 +134,7 @@ export default {
             file: null,
             tagInputVisible: false,
             tagInputValue: "",
+            url: null,
             form: {
                 image: "",
                 title: "",
@@ -214,18 +204,12 @@ export default {
             this.$emit("close");
             done();
         },
-        onFileLoad(response, file, fileList) {
-            var newFile = {
-                name: file.name,
-                url: file.url,
-            };
-            Vue.set(this.fileList, 0, newFile);
-            this.image = file;
-        },
         handleFileUpload() {
-            this.file = this.$refs.file.files[0];
+            this.form.image = this.$refs.file.files[0];
+            this.url = URL.createObjectURL(this.form.image);
         },
         async onUpload() {
+            this.loading = true;
             try {
                 var finalTags = [];
                 finalTags.push(...this.form.tagIds);
@@ -236,18 +220,19 @@ export default {
                 formData.append("for_sale", this.form.for_sale);
                 formData.append("price", this.form.price);
                 formData.append("is_digital", this.form.is_digital);
-                formData.append("privacy", this.form.privacy);
                 for (let i = 0; i < finalTags.length; i++) {
                     formData.append("tags", finalTags[i]);
                 }
-                formData.append("image", this.file);
+                formData.append("image", this.form.image);
 
                 const response = await uploadPhoto(formData);
                 console.log(response);
                 this.$emit("upload", response.data);
-                this.$emit("close");
             } catch (error) {
                 console.log(error.response);
+            } finally {
+                this.loading = false;
+                this.$emit("close");
             }
         },
     },
@@ -274,5 +259,14 @@ export default {
     line-height: 30px;
     padding-top: 0;
     padding-bottom: 0;
+}
+
+.image-preview {
+    border: 1px solid grey;
+    border-radius: 8px;
+    padding: 8px;
+    margin-top: 4px;
+    width: 100px;
+    height: 100px;
 }
 </style>
