@@ -81,7 +81,7 @@ const routes = [{
         component: Failure
     },
     {
-        path: '/payment/canceled/:id',
+        path: '/payment/cancel/:id',
         name: 'Order-Cancel',
         component: Cancel
     },
