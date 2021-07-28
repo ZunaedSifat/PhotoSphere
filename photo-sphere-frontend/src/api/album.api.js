@@ -7,7 +7,7 @@ const createAlbum = (data) => httpClient.post(`${END_POINT}/`, data);
 
 const getUserAlbums = (user) => httpClient.get(`${END_POINT}/`, {
     params: {
-        'user_id': user
+        'user': user
     }
 });
 

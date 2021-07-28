@@ -8,7 +8,7 @@
                 <el-col :offset="1" :span="12">
                     <el-card :body-style="{ padding: '0px' }">
                         <img
-                            :src="photo.image"
+                            :src="image"
                             class="image"
                             oncontextmenu="return false;"
                         />
@@ -56,7 +56,7 @@
                 <el-col :span="1">
                     <el-divider direction="vertical"></el-divider>
                 </el-col>
-                <el-col :span="9">
+                <el-col :span="9" style="text-align: left">
                     <el-skeleton
                         v-if="ownerLoading"
                         :rows="5"
@@ -88,6 +88,21 @@
                                 >
                             </el-descriptions-item>
                         </el-descriptions>
+                        <h3>Preview</h3>
+                        <el-row type="flex">
+                            <el-col
+                                v-for="(preview, index) in previews"
+                                :key="index"
+                                :offset="index == 0 ? 0 : 1"
+                                :span="5"
+                            >
+                                <img :src="preview" class="preview" />
+                                <div style="text-align: center">
+                                    {{ 128 * Math.pow(2, index) }} x
+                                    {{ 128 * Math.pow(2, index) }}
+                                </div>
+                            </el-col>
+                        </el-row>
                         <el-button
                             type="primary"
                             style="
@@ -139,6 +154,8 @@ export default {
             ownerName: null,
             tagsLoading: false,
             tags: [],
+            image: null,
+            previews: [],
             share: false,
             purchase: false,
         };
@@ -172,6 +189,30 @@ export default {
                 console.log(res);
                 this.photo = res.data;
                 this.like_count = this.photo.like_count;
+
+                if (this.photo.owner == this.$store.state.user.id) {
+                    // show original images
+                    this.image = this.photo.image;
+                    this.previews.push(this.photo.optimized_image_128);
+                    this.previews.push(this.photo.optimized_image_256);
+                    this.previews.push(this.photo.optimized_image_512);
+                    this.previews.push(this.photo.optimized_image_1024);
+                } else {
+                    // show watermarked images
+                    this.image = this.photo.watermarked_optimized_image_256;
+                    this.previews.push(
+                        this.photo.watermarked_optimized_image_128
+                    );
+                    this.previews.push(
+                        this.photo.watermarked_optimized_image_256
+                    );
+                    this.previews.push(
+                        this.photo.watermarked_optimized_image_512
+                    );
+                    this.previews.push(
+                        this.photo.watermarked_optimized_image_1024
+                    );
+                }
 
                 getProfileById(this.photo.owner).then((user) => {
                     this.ownerName =
@@ -226,5 +267,9 @@ svg {
 
 .el-tag {
     margin-right: 8px;
+}
+
+.preview {
+    width: 100%;
 }
 </style>
