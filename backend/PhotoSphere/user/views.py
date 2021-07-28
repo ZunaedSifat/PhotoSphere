@@ -1,5 +1,6 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics, views, response, status
+from django.shortcuts import get_object_or_404
 
 from user.serializers import ProfileSerializer, ProfileCreationSerializer
 from user.models import Profile
@@ -44,22 +45,26 @@ class MyProfileView(generics.RetrieveUpdateAPIView):
 class FollowingListAPIView(views.APIView):
     permission_classes = (IsAuthenticated, )
 
-    def get(self, request, format=None):
-        following = request.user.profile.following_list.all()
+    def get(self, request, pk, format=None):
+        profile = get_object_or_404(Profile, pk=pk)
+        following = profile.following_list.all()
         return response.Response(
             data={'following': [item.id for item in following]},
             status=status.HTTP_200_OK
         )
 
+
 class FollowerListAPIView(views.APIView):
     permission_classes = (IsAuthenticated, )
 
-    def get(self, request, format=None):
-        followers = request.user.follower_list.all()
+    def get(self, request, pk, format=None):
+        profile = get_object_or_404(Profile, pk=pk)
+        followers = profile.user.follower_list.all()
         return response.Response(
             data={'followers': [item.id for item in followers]},
             status=status.HTTP_200_OK
         )
+
 
 class FollowAPIView(views.APIView):
     permission_classes = (IsAuthenticated, )
