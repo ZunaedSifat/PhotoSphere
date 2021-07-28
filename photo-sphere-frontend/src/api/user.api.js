@@ -33,6 +33,10 @@ const searchProfile = (search) => httpClient.get(`${END_POINT}/`, {
     },
 });
 
+const followUser = (user) => httpClient.post(`${END_POINT}/follow/${user}/`);
+
+const unfollowUser = (user) => httpClient.delete(`${END_POINT}/follow/${user}/`);
+
 
 export {
     createProfile,
@@ -40,5 +44,7 @@ export {
     getProfileById,
     updateProfile,
     getProfileList,
-    searchProfile
+    searchProfile,
+    followUser,
+    unfollowUser
 }

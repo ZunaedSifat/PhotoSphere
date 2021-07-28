@@ -21,9 +21,23 @@ const getFilteredPhotos = (params) => httpClient.get(`${END_POINT}/`, {
 
 const getPhotoDetails = (id) => httpClient.get(`${END_POINT}/${id}`);
 
+const getMostLikedPhotos = () => httpClient.get(`${END_POINT}/`, {
+    params: {
+        order_by: "-like_count"
+    }
+});
+
+const likePhoto = (id) => httpClient.post(`${END_POINT}/like/${id}/`);
+
+const unlikePhoto = (id) => httpClient.delete(`${END_POINT}/like/${id}/`);
+
+
 export {
     uploadPhoto,
     getUserPhotos,
     getFilteredPhotos,
     getPhotoDetails,
+    getMostLikedPhotos,
+    likePhoto,
+    unlikePhoto
 }

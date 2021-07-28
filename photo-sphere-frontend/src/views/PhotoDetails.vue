@@ -23,13 +23,17 @@
                                             margin-right: 8px;
                                         "
                                     >
-                                        <el-button class="icon-button" circle>
+                                        <el-button
+                                            class="icon-button"
+                                            circle
+                                            @click="like"
+                                        >
                                             <font-awesome-icon
                                                 :icon="['far', 'heart']"
                                             ></font-awesome-icon>
                                         </el-button>
                                         <span class="caption">{{
-                                            photo.like_count
+                                            like_count
                                         }}</span>
                                     </div>
                                     <div style="display: inline-block">
@@ -114,7 +118,7 @@
 </template>
 
 <script>
-import { getPhotoDetails } from "@/api/photo.api";
+import { getPhotoDetails, likePhoto } from "@/api/photo.api";
 import { getProfileById } from "@/api/user.api";
 import { getTag } from "@/api/tag.api";
 import SharePhoto from "@/components/photo/SharePhoto.vue";
@@ -129,6 +133,7 @@ export default {
         return {
             id: this.$route.params.id,
             photo: null,
+            like_count: 0,
             loading: false,
             ownerLoading: false,
             ownerName: null,
@@ -139,6 +144,10 @@ export default {
         };
     },
     methods: {
+        async like() {
+            await likePhoto(this.id);
+            this.like_count++;
+        },
         visitOwnerProfile() {
             this.$router.push({
                 name: "User-Profile",
@@ -162,6 +171,7 @@ export default {
             .then((res) => {
                 console.log(res);
                 this.photo = res.data;
+                this.like_count = this.photo.like_count;
 
                 getProfileById(this.photo.owner).then((user) => {
                     this.ownerName =

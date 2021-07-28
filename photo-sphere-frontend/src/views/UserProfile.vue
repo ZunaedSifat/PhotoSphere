@@ -32,6 +32,14 @@
                         @click="profileEdit = true"
                         >Edit Profile</el-button
                     >
+                    <el-button
+                        v-else
+                        type="primary"
+                        plain
+                        style="padding: 0px 80px"
+                        @click="follow"
+                        >Follow</el-button
+                    >
                 </template>
             </el-col>
             <el-col :span="1">
@@ -122,7 +130,7 @@ import authMixin from "@/mixins/authMixin";
 import PhotoUploadDialog from "@/components/dialog/PhotoUploadDialog";
 import PhotoPreviewCard from "@/components/photo/PhotoPreviewCard";
 import AlbumPreviewCard from "@/components/photo/AlbumPreviewCard";
-import { getProfileById } from "@/api/user.api";
+import { getProfileById, followUser } from "@/api/user.api";
 import { getUserPhotos } from "@/api/photo.api";
 import { getUserAlbums } from "@/api/album.api";
 import AlbumCreateDialog from "@/components/dialog/AlbumCreateDialog.vue";
@@ -156,6 +164,9 @@ export default {
         },
     },
     methods: {
+        follow() {
+            followUser(this.$route.params.id);
+        },
         addNewPhoto(photo) {
             this.photos.push(photo);
         },

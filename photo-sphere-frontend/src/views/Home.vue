@@ -33,19 +33,78 @@
             <el-col :span="1"></el-col>
         </el-row>
         <h3>FEATURED PHOTOS</h3>
+        <div style="text-align: left; padding: 0px 32px">
+            <h3>Most Liked Photos</h3>
+            <el-row type="flex">
+                <el-col
+                    :offset="index == 0 ? 0 : 1"
+                    :span="5"
+                    v-for="(photo, index) in photos"
+                    :key="index"
+                >
+                    <el-card
+                        shadow="always"
+                        @click="viewPhotoDetails(photo.id)"
+                    >
+                        <img
+                            :src="photo.image"
+                            class="image"
+                            oncontextmenu="return false;"
+                        />
+                        <div style="padding: 8px 0px">
+                            {{ photo.title }}
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </div>
     </el-container>
 </template>
 
 <script>
-// @ is an alias to /src
+import { getMostLikedPhotos } from "@/api/photo.api";
+import PhotoPreviewCard from "@/components/photo/PhotoPreviewCard.vue";
 
 export default {
     name: "Home",
-    components: {},
+    components: { PhotoPreviewCard },
+    data() {
+        return {
+            loading: false,
+            photos: [],
+        };
+    },
+    methods: {
+        viewPhotoDetails(id) {
+            this.$router.push({
+                name: "Photo-Details",
+                params: { id },
+            });
+        },
+    },
+    created() {
+        this.loading = true;
+        getMostLikedPhotos()
+            .then((res) => {
+                this.photos.push(...res.data);
+                this.photos.splice(4);
+                this.loading = false;
+            })
+            .catch((error) => {
+                console.log(error);
+                this.loading = false;
+            });
+    },
 };
 </script>
 
 <style lang="scss" scoped>
+.image {
+    width: 100%;
+    height: 120px;
+    display: block;
+}
+
 .carousel__image {
     width: 100%;
     height: 100%;
@@ -66,5 +125,9 @@ export default {
 
 .el-carousel__item:nth-child(2n + 1) {
     background-color: #d3dce6;
+}
+
+.el-card:hover {
+    cursor: pointer;
 }
 </style>
