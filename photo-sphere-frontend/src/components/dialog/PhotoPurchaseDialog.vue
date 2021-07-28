@@ -1,7 +1,7 @@
 <template>
     <el-dialog
         v-model="dialog"
-        title="Create New Exhibition"
+        title="Purchase Photo"
         width="40%"
         show-close
         :before-close="onClose"
@@ -71,6 +71,7 @@ export default {
 
                 const response = await placeOrder(data);
                 console.log(response);
+
                 window.open(response.data.redirection_url);
             } catch (error) {
                 console.log(error.response);
