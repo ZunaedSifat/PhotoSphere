@@ -13,6 +13,15 @@ class AlbumListCreateAPIView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user.profile)
 
+    def filter_queryset(self, queryset):
+        try:
+            user_id = int(self.request.query_params['user'])
+            queryset = queryset.filter(owner=user_id)
+        except:
+            pass
+
+        return queryset
+
 
 class AlbumDetailsAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (AlbumDetailsPermission, )
