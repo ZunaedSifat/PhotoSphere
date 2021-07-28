@@ -38,6 +38,11 @@ class ExhibitionEntryListCreateAPIView(ListCreateAPIView):
         except:
             pass
 
+        try:
+            queryset = queryset.order_by(self.request.query_params['order_by'])
+        except:
+            pass
+
         return queryset
 
 
