@@ -24,11 +24,13 @@ class PhotoSerializer(serializers.ModelSerializer):
             'is_digital',
             'price',
             'created_at',
+            'likes',
             'like_count',
             'exhibition_entry_count'
         )
         read_only_fields = [
             'id',
+            'likes',
             'optimized_image_128',
             'optimized_image_256',
             'optimized_image_512',
